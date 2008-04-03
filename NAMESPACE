@@ -1,0 +1,7 @@
+importFrom("methods", "initialize")
+
+export(gdPlot, DisplayPars)
+exportClasses(DisplayPars, GenericArray, MappedRead, BaseTrack, Legend,
+              Title, Gene, Transcript, GeneModel,GenomeAxis, ExonArray,
+              GeneRegion, TranscriptRegion, Ideogram, Segmentation, gdObject)
+exportMethods(initialize, show, setPar, getPar)
