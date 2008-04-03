@@ -2,16 +2,24 @@
 \alias{gdPlot}
 \title{gdPlot is the main plotting function of the GenomeGraphs package}
 \description{
-  gdPlot is the main plotting function of the GenomeGraphs package.  A collection of objects are given as a list and these will then be plotten in the order given.
+  gdPlot is the main plotting function of the GenomeGraphs package.  A
+  collection of objects are given as a list and these will then be plotten
+  in the order given.
 }
-\usage{
-gdPlot(gdObjects, minBase, maxBase)
-}
+\usage{ gdPlot(gdObjects, minBase, maxBase) }
 
 \arguments{
-  \item{gdObjects}{ This is a list of objects that need to be plotted \code{gdObjects} }
-  \item{minBase}{ \code{minBase} defines the minimum base that will be plotted}
-  \item{maxBase}{ \code{maxBase} defines the maximum base that will be plotted}
+  \item{gdObjects}{ This is either a list of \code{gdObjects} which will
+    be plotted from top to bottom or a single \code{gdObjects} to be plotted.
+  }
+  \item{minBase}{ \code{minBase} defines the minimum base that will be
+    plotted, if ommitted a minimum is determined from the objects in
+    \code{gdObjects} if possible.
+  }
+  \item{maxBase}{ \code{maxBase} defines the maximum base that will be
+    plotted,if ommitted a minimum is determined from the objects in
+    \code{gdObjects} if possible.
+  }
 }
 \references{http://www.stat.berkeley.edu/~steffen/}
 \author{Steffen Durinck}
