@@ -322,8 +322,14 @@ setClass("MappedRead", contains = "gdObject",
                    lwd = 1))
          );
 
-
-
-
-
+setClassUnion("numericOrNull", c("numeric", "NULL"))
+setClass("HighlightRegion", contains = "gdObject",
+         representation(start = "numeric",
+                        end = "numeric",
+                        region = "numericOrNull",
+                        coords = "character"),
+         prototype(region = NULL,
+                   coords = "genomic",
+                   dp = DisplayPars(color = "black",  alpha = 0, lwd = 1, lty = "solid")
+                   ));
 

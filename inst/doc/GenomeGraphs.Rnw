@@ -190,6 +190,7 @@ consTrack <- new("BaseTrack", base = conserv[, 1], value = conserv[,2],
 gdPlot(list(grP, gaxis, grM, "conservation" = consTrack), minBase = minB, maxBase = maxB)
 @ 
 
+
 \section{Odds and Ends}
 In addition to plotting the genes we can enable the plotting of names of genes. 
 
@@ -212,6 +213,43 @@ arguments.
 <<fig=TRUE>>=
 gdPlot(new("GeneRegion", start = 9000, end = 15000, biomart = yeastMart,
            strand = "-", chromosome = "I", dp = DisplayPars(plotId=TRUE)))
+@ 
+
+\subsection{HighlightRegions} 
+We can also highlight vertical areas of interest using
+\texttt{HighlightRegions}. This allows us to highlight certain areas
+of the plot. The key things to notice here are that the coordinates
+for the horizontal points are in genomic coordinates and the vertical
+coordinates represent the ``tracks'' that you wish to be highlighted. 
+
+<<echo=TRUE, fig=TRUE>>=
+ga <- new("GenomeAxis")
+grF <- new("GeneRegion", start = 10000, end = 20000, chromosome = "I", strand = "+", biomart = yeastMart)
+grR <- new("GeneRegion", start = 10000, end = 20000, chromosome = "I", strand = "-", biomart = yeastMart)
+bt <- new("BaseTrack", base = yeastCons1[,1], value = yeastCons1[,2])
+hr1 <- new("HighlightRegion", start = 11000, end = 13000)
+hr2 <- new("HighlightRegion", start = 15900, end = 16500)
+          
+gdPlot(list(grF, ga, grR, bt), highlightRegions = list(hr1, hr2))
+@ 
+
+A little nifty feature is to allow alpha blending to make things
+slightly transparent. If the device you wish to plot on however, does
+not support transparency then you will get a warning. 
+
+<<echo=TRUE,fig=TRUE>>=
+hr <- new("HighlightRegion", start = 11000, end = 13000, region = c(1,3), 
+          dp = DisplayPars(color = "green", alpha = .3))
+gdPlot(list(grF, ga, grR, bt), highlightRegions = hr)
+@ 
+
+Also, one can use "absolute" coordinates to specify a region just in
+case one wants to be a bit more precise. 
+<<fig=TRUE>>=
+hrR <- new("HighlightRegion", start = .1, end = .3, coords = "absolute",
+           dp = DisplayPars(color = "grey", alpha = 0, lty = "dashed"),
+           region = c(.4,.7))
+gdPlot(list(grF, ga, grR, bt), highlightRegions = list(hr, hrR))
 @ 
 
 \subsection{GenomeGraphs Classes}

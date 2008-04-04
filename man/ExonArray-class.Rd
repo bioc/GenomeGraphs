@@ -4,13 +4,18 @@
 \alias{show,ExonArray-method}
 
 \title{Class "ExonArray" representing probe level exon array data from Affymetrix}
-\description{Represents probe level exon array data from Affymetrix.  Makes it possible to visualize alternative splicing as measured by the Affymetrix exon array platform and relate it to known transcript isoforms annotated by Ensembl}
+\description{Represents probe level exon array data from
+  Affymetrix. Makes it possible to visualize alternative splicing as
+  measured by the Affymetrix exon array platform and relate it to known
+  transcript isoforms annotated by Ensembl
+}
 \section{Objects from the Class}{
 Objects can be created by calls of the form \code{new("ExonArray", ...)}.
 }
 \section{Slots}{
-	 \describe{
-    \item{\code{intensity}:}{Object of class \code{"matrix"}, array data matrix containing probes as the rows and samples as the columns}
+  \describe{
+    \item{\code{intensity}:}{Object of class \code{"matrix"}, array data
+      matrix containing probes  as the rows and samples as the columns}
     \item{\code{probeStart}:}{Object of class \code{"numeric"} vector with the start positions of the probes}
     \item{\code{probeEnd}:}{Object of class \code{"numeric"} vector with the end positions of the probes}
     \item{\code{probeId}:}{Object of class \code{"character"} vector containing the probeset identifiers}
@@ -18,11 +23,16 @@ Objects can be created by calls of the form \code{new("ExonArray", ...)}.
     \item{\code{size}:}{Object of class \code{"numeric"} specifying the size of the ExonArray plot in the final plot}
     \item{\code{displayProbesets}:}{Object of class \code{"logical"} used to indicate if probe set names should be plotted or not}
     \item{\code{probesetSize}:}{Object of class \code{"numeric"} font size of the probeset identifiers to be plotted }
-    \item{\code{color}:}{Object of class \code{"character"} vector of colors or one color that will be used to draw the intensity values }
-    \item{\code{mapColor}:}{Object of class \code{"character"} specifying the color of the lines that  map the probeset positions to the Ensembl gene annotation}
+    \item{\code{color}:}{Object of class \code{"character"} vector of
+      colors or one color that will be used to draw  the intensity values }
+    \item{\code{mapColor}:}{Object of class \code{"character"}
+      specifying the color of the lines that  map the probeset positions to the Ensembl gene annotation}
     \item{\code{lwd}:}{Object of class \code{"numeric"} vector of line widths to be used to plot the intensity data.}
     \item{\code{lty}:}{Object of class \code{"character"} vector of line types to be used to plot the intensity data.}
   }
+}
+\section{Extends}{
+  Class \code{"\linkS4class{gdObject}"}, directly.
 }
 \section{Methods}{
   \describe{

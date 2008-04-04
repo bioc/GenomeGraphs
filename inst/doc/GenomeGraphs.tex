@@ -231,6 +231,7 @@ data along with annotation.
 \end{Schunk}
 \includegraphics{GenomeGraphs-010}
 
+
 \section{Odds and Ends}
 In addition to plotting the genes we can enable the plotting of names of genes. 
 
@@ -264,6 +265,62 @@ arguments.
 \end{Sinput}
 \end{Schunk}
 \includegraphics{GenomeGraphs-012}
+
+\subsection{HighlightRegions} 
+We can also highlight vertical areas of interest using
+\texttt{HighlightRegions}. This allows us to highlight certain areas
+of the plot. The key things to notice here are that the coordinates
+for the horizontal points are in genomic coordinates and the vertical
+coordinates represent the ``tracks'' that you wish to be highlighted. 
+
+\begin{Schunk}
+\begin{Sinput}
+> ga <- new("GenomeAxis")
+> grF <- new("GeneRegion", start = 10000, 
++     end = 20000, chromosome = "I", strand = "+", 
++     biomart = yeastMart)
+> grR <- new("GeneRegion", start = 10000, 
++     end = 20000, chromosome = "I", strand = "-", 
++     biomart = yeastMart)
+> bt <- new("BaseTrack", base = yeastCons1[, 
++     1], value = yeastCons1[, 2])
+> hr1 <- new("HighlightRegion", start = 11000, 
++     end = 13000)
+> hr2 <- new("HighlightRegion", start = 15900, 
++     end = 16500)
+> gdPlot(list(grF, ga, grR, bt), highlightRegions = list(hr1, 
++     hr2))
+\end{Sinput}
+\end{Schunk}
+\includegraphics{GenomeGraphs-013}
+
+A little nifty feature is to allow alpha blending to make things
+slightly transparent. If the device you wish to plot on however, does
+not support transparency then you will get a warning. 
+
+\begin{Schunk}
+\begin{Sinput}
+> hr <- new("HighlightRegion", start = 11000, 
++     end = 13000, region = c(1, 3), dp = DisplayPars(color = "green", 
++         alpha = 0.3))
+> gdPlot(list(grF, ga, grR, bt), highlightRegions = hr)
+\end{Sinput}
+\end{Schunk}
+\includegraphics{GenomeGraphs-014}
+
+Also, one can use "absolute" coordinates to specify a region just in
+case one wants to be a bit more precise. 
+\begin{Schunk}
+\begin{Sinput}
+> hrR <- new("HighlightRegion", start = 0.1, 
++     end = 0.3, coords = "absolute", dp = DisplayPars(color = "grey", 
++         alpha = 0, lty = "dashed"), region = c(0.4, 
++         0.7))
+> gdPlot(list(grF, ga, grR, bt), highlightRegions = list(hr, 
++     hrR))
+\end{Sinput}
+\end{Schunk}
+\includegraphics{GenomeGraphs-015}
 
 \subsection{GenomeGraphs Classes}
 \begin{table}[bp!]

@@ -4,12 +4,16 @@
 \alias{show,GenericArray-method}
 
 \title{Class "GenericArray", representing array data }
-\description{The Generic Array class is a class that can be used to create plots from array data such as microarrays and arrayCGH platforms. It can represent,  the data as line plots or dot plots and segments can be included as well}
+\description{The Generic Array class is a class that can be used to
+  create plots from array data such as microarrays and arrayCGH
+  platforms. It can represent,  the data as line plots or dot plots and
+  segments can be included as well
+}
 \section{Objects from the Class}{
 Objects can be created by calls of the form \code{new("GenericArray", ...)}.
 }
 \section{Slots}{
-	 \describe{
+  \describe{
     \item{\code{intensity}:}{Object of class \code{"matrix"}, matrix containing the intensities of expression or cgh data.  Rows should be probes, columns samples}
     \item{\code{probeStart}:}{Object of class \code{"numeric"}, start position of the probes}
     \item{\code{probeEnd}:}{Object of class \code{"numeric"}, end position of the probes if available}

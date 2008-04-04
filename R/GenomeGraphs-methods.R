@@ -88,7 +88,6 @@ setMethod("getBiotypeColor", signature("gdObject"), function(obj,biotype) {
     getPar(obj@dp, biotype)
 })
 
-
 setGeneric("getSize",def=function(obj,...)standardGeneric("getSize"))
 setMethod("getSize",signature("gdObject"),function(obj) {
     getPar(obj@dp, "size")
@@ -291,7 +290,7 @@ setMethod("getGenomicRange", signature("BaseTrack"), function(obj){
     c(min(obj@base), max(obj@base))
 })
 setMethod("getGenomicRange", signature("BaseTrack"), function(obj){
-    c(obj@start, obj@end)
+    c(min(obj@base), max(obj@base))
 })
 setMethod("getGenomicRange", signature("GenericArray"), function(obj){
     c(min(obj@probeStart), ifelse(length(obj@probeEnd) > 0, max(obj@probeEnd), max(obj@probeStart)))
@@ -867,7 +866,6 @@ setMethod("drawGD", signature("Legend"), function(gdObject, minBase, maxBase, vp
     }
     popViewport()
 })
-
           
 
           
