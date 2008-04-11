@@ -1,6 +1,7 @@
 \name{Ideogram-class}
 \docType{class}
 \alias{Ideogram-class}
+\alias{drawGD,Ideogram-method}
 
 \title{Class "Ideogram", represent an Ideogram}
 \description{An ideogram is a representation of a chromosome containing the banding pattern.  Note that currently ideograms are only available for hsapiens.}

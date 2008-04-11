@@ -2,6 +2,7 @@
 \docType{class}
 \alias{MappedRead-class}
 \alias{show,MappedRead-method}
+\alias{drawGD,MappedRead-method}
 
 \title{Represents mapped reads}
 \description{ Represents mapped reads}

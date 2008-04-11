@@ -19,8 +19,9 @@ gdPlot <- function(gdObjects, minBase = NA, maxBase = NA, highlightRegions = NUL
   names(vplayout) <- as.character(seq(along = gdObjects))
   
   ## don't draw things that are of size 0.
-  vplayout <- vplayout[vplayout > 0]
-  gdObjects <- gdObjects[vplayout > 0]
+  mask <- vplayout > 0
+  vplayout <- vplayout[mask]
+  gdObjects <- gdObjects[mask]
 
   if (!is.null(names(gdObjects))) {
     pushViewport(viewport(layout = grid.layout(1, 2, width = c(0.10, 0.9)),
@@ -53,7 +54,7 @@ gdPlot <- function(gdObjects, minBase = NA, maxBase = NA, highlightRegions = NUL
   }
   
   for (i in seq(along = gdObjects)) {
-    drawGD(gdObjects[[i]], minBase, maxBase, i)
+      drawGD(gdObjects[[i]], minBase, maxBase, i)
   }
   
   if (!is.null(highlightRegions)) {

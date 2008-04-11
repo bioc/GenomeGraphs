@@ -195,7 +195,7 @@ gdPlot(list(grP, gaxis, grM, "conservation" = consTrack), minBase = minB, maxBas
 In addition to plotting the genes we can enable the plotting of names of genes. 
 
 <<fig=TRUE>>=
-plotGeneRegion <- function(chr = 1, minB = 9000, maxB = 13000, rot = 0, col = "white") {
+plotGeneRegion <- function(chr = 1, minB = 9000, maxB = 13000, rot = 0, col = "green") {
   chrRoman <- as.character(as.roman(1:17)[chr])
   grP <- new("GeneRegion", start = minB, end = maxB, 
              strand = "+", chromosome = chrRoman, biomart = yeastMart, 

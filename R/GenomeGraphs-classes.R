@@ -118,14 +118,18 @@ setMethod("initialize", "Gene", function(.Object, ...){
     .Object
 })
 
+## Why can't I just use the setClassUnion Mechanism?
+setClassUnion("MartOrNULL", c("Mart", "NULL"))
+
 setClass("GeneRegion", contains = "gdObject",
          representation(start = "numeric",
                         end = "numeric",
                         chromosome = "character",
                         strand = "character",
-                        biomart = "Mart",
+                        biomart = "MartOrNULL",
                         ens = "dfOrNULL"),
-         prototype(strand = "+",
+         prototype(biomart = NULL,
+                   strand = "+",
                    dp = DisplayPars(size = 1,
                    color = "orange",
                    plotId = FALSE,
@@ -164,12 +168,16 @@ setMethod("initialize", "GeneRegion", function(.Object,...){
     ##-- changing start and end positions to capture genes on the edges. 
     .Object@start <- .Object@start - 2000
     .Object@end <- .Object@end + 2000
+
+    if (!is.null(.Object@biomart)) {
+        .Object@ens <- getBM(c("structure_gene_stable_id","structure_transcript_stable_id",
+                               "structure_exon_stable_id","structure_exon_chrom_start","structure_exon_chrom_end",
+                               "structure_exon_rank", "structure_transcript_chrom_strand","structure_biotype"),
+                             filters=c("chromosome_name", "start", "end", "strand"),
+                             values=list(.Object@chromosome,.Object@start, .Object@end, strand),
+                             mart=.Object@biomart)
+    }
     
-    .Object@ens <- getBM(c("structure_gene_stable_id","structure_transcript_stable_id",
-                           "structure_exon_stable_id","structure_exon_chrom_start","structure_exon_chrom_end",
-                           "structure_exon_rank", "structure_transcript_chrom_strand","structure_biotype"),
-                         filters=c("chromosome_name", "start", "end", "strand"),
-                         values=list(.Object@chromosome,.Object@start, .Object@end, strand),mart=.Object@biomart)
     if (is.null(.Object@ens)) {
         setPar(.Object, "size", 0)
     }

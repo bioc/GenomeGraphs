@@ -1,6 +1,7 @@
 \name{Legend-class}
 \docType{class}
 \alias{Legend-class}
+\alias{drawGD,Legend-method}
 
 \title{Class "Legend", represents a legend to add to a plot}
 \description{This class represents a legend}

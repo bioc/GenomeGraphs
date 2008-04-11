@@ -1,6 +1,7 @@
 \name{GeneModel-class}
 \docType{class}
 \alias{GeneModel-class}
+\alias{drawGD,GeneModel-method}
 
 \title{Class "GeneModel", represents a custom gene model}
 \description{This class represents a custom gene model defined by exon boundaries.  An example of this class could be an Affymetrix gene model used to create the Affy Exon array}

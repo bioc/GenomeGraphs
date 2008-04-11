@@ -2,6 +2,7 @@
 \docType{class}
 \alias{ExonArray-class}
 \alias{show,ExonArray-method}
+\alias{drawGD,ExonArray-method}
 
 \title{Class "ExonArray" representing probe level exon array data from Affymetrix}
 \description{Represents probe level exon array data from

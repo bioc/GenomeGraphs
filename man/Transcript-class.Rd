@@ -3,6 +3,7 @@
 \alias{Transcript-class}
 \alias{initialize,Transcript-method}
 \alias{show,Transcript-method}
+\alias{drawGD,Transcript-method}
 
 \title{Represent known transcript isoforms as annoted by Ensembl}
 \description{Represent known transcript isoforms as annoted by Ensembl}
@@ -23,6 +24,7 @@ Objects can be created by calls of the form \code{new("Transcript", ...)}.
 }
 \section{Methods}{
   \describe{
+  \item{drawGD}{\code{signature(.Object = "Transcript")}: ... }    
     \item{initialize}{\code{signature(.Object = "Transcript")}: ... }
     \item{show}{\code{signature(object = "Transcript")}: ... }
 	 }

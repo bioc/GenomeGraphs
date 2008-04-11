@@ -2,6 +2,7 @@
 \docType{class}
 \alias{Gene-class}
 \alias{initialize,Gene-method}
+\alias{drawGD,Gene-method}
 \alias{show,Gene-method}
 
 \title{Class "Gene" represents the Ensembl Gene level annotation }
@@ -22,6 +23,7 @@ Objects can be created by calls of the form \code{new("Gene", ...)}.
 \section{Methods}{
   \describe{
     \item{initialize}{\code{signature(.Object = "Gene")}: ... }
+    \item{drawGD}{\code{signature(.Object = "Gene")}: ... }    
     \item{show}{\code{signature(object = "Gene")}: ... }
 	 }
 }

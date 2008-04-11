@@ -2,6 +2,7 @@
 \docType{class}
 \alias{GenericArray-class}
 \alias{show,GenericArray-method}
+\alias{drawGD,GenericArray-method}
 
 \title{Class "GenericArray", representing array data }
 \description{The Generic Array class is a class that can be used to

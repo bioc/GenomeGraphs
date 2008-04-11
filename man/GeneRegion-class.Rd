@@ -3,6 +3,7 @@
 \alias{GeneRegion-class}
 \alias{initialize,GeneRegion-method}
 \alias{show,GeneRegion-method}
+\alias{drawGD,GeneRegion-method}
 
 \title{Class "GeneRegion", representing gene structures in a defined genomic region }
 \description{Given a start and end position and a chromosome name, all gene structures in this region will be retrieved from Ensembl upon creation of the object.}
@@ -23,6 +24,7 @@ Objects can be created by calls of the form \code{new("GeneRegion", ...)}.
 }
 \section{Methods}{
   \describe{
+    \item{drawGD}{\code{signature(.Object = "GeneRegion")}: ... }    
     \item{initialize}{\code{signature(.Object = "GeneRegion")}: ... }
     \item{show}{\code{signature(object = "GeneRegion")}: ... }
 	 }

@@ -1,6 +1,7 @@
 \name{Title-class}
 \docType{class}
 \alias{Title-class}
+\alias{drawGD,Title-method}
 
 \title{Class "Title" representing the title of a plot }
 \description{Represent the title of a plot}

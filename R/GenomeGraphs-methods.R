@@ -322,8 +322,8 @@ setGeneric("drawGD", def=function(gdObject, minBase, maxBase, vpPosition, ...) s
 
     for(i in seq(along=ens[,1])) {
         color <- getColor(gdObject)
-        if (!is.null(getBiotypeColor(gdObject,ens[i,8])))
-            color <- getBiotypeColor(gdObject,ens[i,8])
+        if (!is.null(getBiotypeColor(gdObject, ens[i,8])))
+            color <- getBiotypeColor(gdObject, ens[i,8])
 
         grid.rect(ens[i, 5], 5, width = ens[i, 5] - ens[i, 4], height = 30,
                   gp=gpar(col = "black", fill = color), default.units="native",
@@ -332,7 +332,7 @@ setGeneric("drawGD", def=function(gdObject, minBase, maxBase, vpPosition, ...) s
         if (getPlotId(gdObject)) {
             rot <- getPar(gdObject, "idRotation")
             col <- getPar(gdObject, "idColor")
-            grid.text(ens[i,1], (ens[i,4] + ens[i, 5])/2, 15, rot = rot, gp = gpar(col=col),
+            grid.text(ens[i,1], (ens[i,4] + ens[i, 5])/2, 15, rot = rot, gp = gpar(col=col, cex = getCex(gdObject)),
                       default.units = "native", just = c("center", "center"))
         }
     }
@@ -384,7 +384,7 @@ setMethod("drawGD", signature("Transcript"), function(gdObject, minBase, maxBase
                                   layout.pos.col=1, layout.pos.row = i))
         if(getPlotId(gdObject)){
           grid.text(label=formatC(trans[1,2], format="d"), x = minBase, y = 30, just = c("left", "bottom"),
-                    gp = gpar(cex=.8), default.units = "native")
+                    gp = gpar(cex = getCex(gdObject)), default.units = "native")
         } 
         for(i in seq(along=trans[,1])){
             grid.rect(trans[i,4],10,width=trans[i,4]-trans[i,5],height=30,gp=gpar(col = "black",fill = color),
@@ -596,11 +596,14 @@ setMethod("drawGD", signature("BaseTrack"), function(gdObject, minBase, maxBase,
     lty <- getLty(gdObject)  
     ord <- order(getBase(gdObject))
     pos <- getBase(gdObject)[ord]
+    whBase <- (pos > minBase & pos < maxBase)
     baseValue <- baseValue[ord]
 
-    grid.points(pos, baseValue, default.units = "native", gp = gpar(col=col),
-                size = unit(lwd, "char"), pch = 16)
-    grid.yaxis()
+    if (sum(whBase) > 0) {
+        grid.points(pos[whBase], baseValue[whBase], default.units = "native", gp = gpar(col=col),
+                    size = unit(lwd, "char"), pch = 16)
+        grid.yaxis()
+    }
 
     sObj <- getSegmentation(gdObject)
     if (!is.null(sObj)) {

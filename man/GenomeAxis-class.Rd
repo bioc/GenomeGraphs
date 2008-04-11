@@ -1,6 +1,7 @@
 \name{GenomeAxis-class}
 \docType{class}
 \alias{GenomeAxis-class}
+\alias{drawGD,GenomeAxis-method}
 
 \title{Class "GenomeAxis", representing a genomic coordinate axis}
 \description{Represents a genomic coordinate axis}

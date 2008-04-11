@@ -2,6 +2,7 @@
 \docType{class}
 \alias{BaseTrack-class}
 \alias{show,BaseTrack-method}
+\alias{drawGD,BaseTrack-method}
 
 \title{Class "BaseTrack" represents base specific data}
 \description{Represents specific data, e.g. how many times was every base sequenced}
