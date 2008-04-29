@@ -1,5 +1,5 @@
 Package: GenomeGraphs
-Version: 0.99.2
+Version: 1.0.0
 Title: Plotting genomic information from Ensembl
 Author: Steffen Durinck <steffen@stat.berkeley.edu>, James Bullard <bullard@berkeley.edu>
 Maintainer: Steffen Durinck <steffen@stat.berkeley.edu>
