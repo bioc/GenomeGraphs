@@ -9,17 +9,42 @@ setMethod("initialize", "DisplayPars", function(.Object) {
     .Object
 })
 
+##-- write the arguments of 1 into 2 return 2. 
+dpConcat <- function(dp1, dp2) {
+    if (is.null(dp1) && is.null(dp2))
+        return(DisplayPars())
+    if (is.null(dp1)) 
+        return(dp2)
+    if (is.null(dp2))
+        return(dp1)
+    
+    sapply(ls(dp1@pars), function(nm) {
+        setPar(dp2, nm, getPar(dp1, nm))
+    })
+    return(dp2)
+}
+
 DisplayPars <- function(...) {
     args <- list(...)
     dp <- new("DisplayPars")
     
+    i <- match(names(args), "dp")
+    if (length(i) > 0 && !is.na(i)) {
+        if (class(dpOrig <- args[[i]]) == "DisplayPars") {
+            args <- args[-i]
+            dp <- dpOrig
+        }
+    }
+
     for (i in seq(along = args)) {
         setPar(dp, names(args)[i], args[[i]])
     }
     return(dp)
 }
+
 ##
-## The methods for the DisplayPars class.
+## The methods for the DisplayPars class. (they need to be in here
+## because they are called in prototypes)
 ##
 setMethod("show", "DisplayPars", function(object) {
     sapply(ls(object@pars), function(x) {
@@ -43,12 +68,10 @@ setMethod("getPar", "DisplayPars", function(obj, name) {
     get(name, obj@pars)
 })
 
-
-
 setClassUnion("dfOrNULL", c("data.frame", "NULL"))
 
 ##
-## The gdObject is the parent of all Gene Data objects in the system
+## The gdObject is the parent of all GenomeGraphs objects in the system
 ##
 setClass("gdObject", representation = representation(dp = "DisplayPars"), 
          prototype = prototype(dp = DisplayPars()))
@@ -91,6 +114,79 @@ setMethod("initialize", "gdObject", function(.Object, ...) {
     .Object@dp <- newDP
     return(.Object)
 })
+
+setClass("AnnotationTrack", contains = "gdObject",
+         representation(chr = "numeric", strand = "numeric",
+                        regions = "dfOrNULL"),
+         
+         prototype(columns = c("start", "end", "feature", "group", "ID"),
+                   featureColumnName = "feature",
+                   dp = DisplayPars(size = 1,
+                                    defaultFeatureColor = "green",
+                                    defaultFeatureShape = "rectanlge",
+                                    plotId = FALSE,
+                                    featureColors = NULL,
+                                    featureShapes = NULL)))
+
+setMethod("initialize", "AnnotationTrack", function(.Object, ...) {
+    .Object <- callNextMethod()
+
+    if (!all(.Object@columns %in% colnames(.Object@regions))) {
+        stop(cat("problem initializing AnnotationTrack need the following columns:",
+                 paste(.Object@columns, collpase = ", ")), "\n")
+    }
+    return(.Object)
+})
+
+geneBiomart <- function(id, biomart, type = "ensembl_gene_id", dp = NULL) {
+    ens <- getBM(c("structure_gene_stable_id", "structure_transcript_stable_id", "structure_exon_stable_id",
+                   "structure_exon_chrom_start", "structure_exon_chrom_end", "structure_exon_rank",
+                   "structure_transcript_chrom_strand", "structure_biotype"),
+                 filters = type, values = id, mart = biomart)
+
+    dp <- dpConcat(dp, DisplayPars(size = 1, color = "orange", plotId = FALSE, idRotation = 90, idColor = "white"))
+    new("AnnotationTrack", chr = 0, strand = -1,
+        regions = data.frame(start = ens[,4], end = ens[,5], feature = ens[,8], group = ens[,1], ID = ens[,3]),
+        dp = dp)
+}
+
+geneRegionBiomart <- function(chr, start, end, strand, biomart, dp = NULL, chrFunction = function(x) x,
+                              strandFunction = function(x) x) {
+  ens <- getBM(c("structure_gene_stable_id","structure_transcript_stable_id", "structure_exon_stable_id",
+                 "structure_exon_chrom_start","structure_exon_chrom_end", "structure_exon_rank",
+                 "structure_transcript_chrom_strand","structure_biotype"),
+               filters = c("chromosome_name", "start", "end", "strand"),
+               values = list(chrFunction(chr), start, end, strandFunction(strand)), mart = biomart)
+
+    dp <- dpConcat(dp, DisplayPars(size = 1, color = "orange", plotId = FALSE, idRotation = 90, idColor = "white",
+                                   C_segment = "burlywood4",
+                                   D_segment = "lightblue",
+                                   J_segment = "dodgerblue2",
+                                   miRNA     = "cornflowerblue",
+                                   miRNA_pseudogene = "cornsilk",
+                                   misc_RNA         = "cornsilk3",
+                                   misc_RNA_pseudogene = "cornsilk4",
+                                   Mt_rRNA = "yellow",
+                                   Mt_tRNA = "darkgoldenrod",
+                                   Mt_tRNA_pseudogene = "darkgoldenrod1",
+                                   protein_coding = "gold4",
+                                   pseudogene  = "brown1",         
+                                   retrotransposed = "blueviolet",
+                                   rRNA = "darkolivegreen1",
+                                   rRNA_pseudogene = "darkolivegreen" ,   
+                                   scRNA = "darkorange",
+                                   scRNA_pseudogene = "darkorange2",
+                                   snoRNA = "cyan",           
+                                   snoRNA_pseudogene = "cyan2",
+                                   snRNA = "coral",
+                                   snRNA_pseudogene = "coral3",   
+                                   tRNA_pseudogene = "antiquewhite3",
+                                   V_segment =  "aquamarine", dp = dp))
+
+    new("AnnotationTrack", chr = chr, strand = strand,
+        regions = data.frame(start = ens[,4], end = ens[,5], feature = ens[,8], group = ens[,1], ID = ens[,3]),
+        dp = dp)
+}
 
 setClass("Gene", contains = "gdObject",
          representation(id = "character",

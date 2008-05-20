@@ -242,19 +242,20 @@ setGeneric("getStrand",def=function(obj,...)standardGeneric("getStrand"))
 setMethod("getStrand",signature("MappedRead"),function(obj) obj@strand)
 
 setGeneric("getPlotId",def=function(obj,...)standardGeneric("getPlotId"))
+
 setMethod("getPlotId",signature("Transcript"),function(obj){
   getPar(obj@dp,"plotId")
-  })
+})
 setMethod("getPlotId",signature("Gene"),function(obj){
-  getPar(obj@dp,"plotId")
-  })
+    getPar(obj@dp,"plotId")
+})
 setMethod("getPlotId",signature("GeneRegion"),function(obj){
-  getPar(obj@dp,"plotId")
-  })
+    getPar(obj@dp,"plotId")
+})
 setGeneric("getPlotMap",def=function(obj,...)standardGeneric("getPlotMap"))
 setMethod("getPlotMap",signature("ExonArray"),function(obj){
-  getPar(obj@dp,"plotMap")
-  })
+    getPar(obj@dp,"plotMap")
+})
 
 ##
 ## I could imagine that this gets refactored into gdObject, however for
@@ -303,6 +304,57 @@ setMethod("getGenomicRange", signature("ExonArray"), function(obj){
 ## The drawGD methods. 
 ##
 setGeneric("drawGD", def=function(gdObject, minBase, maxBase, vpPosition, ...) standardGeneric("drawGD"))
+
+setMethod("drawGD", signature("AnnotationTrack"), function(gdObject, minBase, maxBase, vpPosition) {
+    regions <- gdObject@regions
+
+    if (is.null(regions) || nrow(regions) == 0) {
+        return(NULL)
+    }
+    pushViewport(dataViewport(xData=c(minBase, maxBase), extension = 0,
+                              clip = TRUE, yscale = c(0, 40),
+                              layout.pos.col = 1, layout.pos.row = vpPosition))
+    
+    for(i in seq(length = nrow(regions))) {
+        color <- getPar(gdObject, as.character(regions[i, gdObject@featureColumnName]))
+        if (is.null(color))
+            color <- getPar(gdObject, "defaultFeatureColor")
+        
+        grid.rect(regions[i, "end"], 5, width = regions[i, "end"] - regions[i, "start"],
+                  height = 30, gp = gpar(col = "black", fill = color),
+                  default.units = "native", just = c("right", "bottom"))
+
+##         if (getPlotId(gdObject)) {
+##             rot <- getPar(gdObject, "idRotation")
+##             col <- getPar(gdObject, "idColor")
+##             grid.text(ens[i,1], (ens[i,4] + ens[i, 5])/2, 15, rot = rot, gp = gpar(col=col, cex = getCex(gdObject)),
+##                       default.units = "native", just = c("center", "center"))
+##         }
+    }
+    groups <- split(regions, regions[, "group"])
+    
+    lapply(Filter(function(x) nrow(x) > 1, groups), function(group) {
+        ord <- order(group[,"start"])
+        group <- group[ord, ]
+
+        for (i in seq(length = (nrow(group) - 1))) {
+            start <- group[i,"end"]
+            end <- group[i + 1, "start"]
+            mid <- start + (end - start)/4
+            pp <- 15
+
+            color <- getPar(gdObject, as.character(regions[i, gdObject@featureColumnName]))
+            if (is.null(color))
+                color <- getPar(gdObject, "defaultFeatureColor")
+            
+            grid.lines(c(start, mid), c(20, pp), default.units = "native",
+                       gp = gpar(col = color, just = c("right", "bottom")))
+            grid.lines(c(mid, end), c(pp, 20), default.units = "native",
+                       gp = gpar(col = color, just = c("right", "bottom")))
+        }
+    })
+    popViewport(1)
+})
 
 ################################
 # Plots Ensembl Gene models    #

@@ -1,9 +1,9 @@
 importFrom("methods", "initialize")
 importClassesFrom("biomaRt", "Mart")
 
-export(gdPlot, DisplayPars)
+export(gdPlot, DisplayPars, geneRegionBiomart, geneBiomart)
 exportClasses(DisplayPars, GenericArray, MappedRead, BaseTrack, Legend,
               Title, Gene, Transcript, GeneModel,GenomeAxis, ExonArray,
               GeneRegion, TranscriptRegion, Ideogram, Segmentation, gdObject,
-              HighlightRegion)
+              HighlightRegion, AnnotationTrack)
 exportMethods(initialize, show, setPar, getPar, drawGD)
