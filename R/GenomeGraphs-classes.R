@@ -116,17 +116,14 @@ setMethod("initialize", "gdObject", function(.Object, ...) {
 })
 
 setClass("AnnotationTrack", contains = "gdObject",
-         representation(chr = "numeric", strand = "numeric",
-                        regions = "dfOrNULL"),
+         representation(chr = "numeric", strand = "numeric", regions = "dfOrNULL"),
          
          prototype(columns = c("start", "end", "feature", "group", "ID"),
                    featureColumnName = "feature",
                    dp = DisplayPars(size = 1,
-                                    defaultFeatureColor = "green",
-                                    defaultFeatureShape = "rectanlge",
-                                    plotId = FALSE,
-                                    featureColors = NULL,
-                                    featureShapes = NULL)))
+                   plotId = FALSE,
+                   idRotation = 0,
+                   idColor = "white")))
 
 setMethod("initialize", "AnnotationTrack", function(.Object, ...) {
     .Object <- callNextMethod()

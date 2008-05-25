@@ -252,6 +252,10 @@ setMethod("getPlotId",signature("Gene"),function(obj){
 setMethod("getPlotId",signature("GeneRegion"),function(obj){
     getPar(obj@dp,"plotId")
 })
+setMethod("getPlotId",signature("AnnotationTrack"),function(obj){
+    getPar(obj@dp,"plotId")
+})
+
 setGeneric("getPlotMap",def=function(obj,...)standardGeneric("getPlotMap"))
 setMethod("getPlotMap",signature("ExonArray"),function(obj){
     getPar(obj@dp,"plotMap")
@@ -324,12 +328,16 @@ setMethod("drawGD", signature("AnnotationTrack"), function(gdObject, minBase, ma
                   height = 30, gp = gpar(col = "black", fill = color),
                   default.units = "native", just = c("right", "bottom"))
 
-##         if (getPlotId(gdObject)) {
-##             rot <- getPar(gdObject, "idRotation")
-##             col <- getPar(gdObject, "idColor")
-##             grid.text(ens[i,1], (ens[i,4] + ens[i, 5])/2, 15, rot = rot, gp = gpar(col=col, cex = getCex(gdObject)),
-##                       default.units = "native", just = c("center", "center"))
-##         }
+        if (getPlotId(gdObject)) {
+            rot <- getPar(gdObject, "idRotation")
+            col <- getPar(gdObject, "idColor")
+
+            if (!is.null(nm <- regions[i, "ID"])) {
+                grid.text(nm, (regions[i, "start"] + regions[i, "end"])/2, 15,
+                          rot = rot, gp = gpar(col=col, cex = getCex(gdObject)),
+                          default.units = "native", just = c("center", "center"))
+            }
+        }
     }
     groups <- split(regions, regions[, "group"])
     
@@ -640,9 +648,22 @@ setMethod("drawGD", signature("BaseTrack"), function(gdObject, minBase, maxBase,
     xlim <- getPar(gdObject, "xlim")
     if (is.null(xlim)) xlim <- c(minBase, maxBase)
     if (is.null(ylim)) ylim <- range(baseValue, na.rm=TRUE)
+
+    drawAxis <- getPar(gdObject, "drawAxis")
+    if (is.null(drawAxis)) drawAxis <- TRUE
+
+    if (drawAxis) {
+        pushViewport(dataViewport(xData = xlim, yData = ylim, extension = 0,
+                                  layout.pos.col = 1, layout.pos.row = vpPosition))
+    } else {
+##         xData=c(minBase, maxBase), extension = 0,
+##                               clip = TRUE, yscale = c(0, 40),
+##                               layout.pos.col=1, layout.pos.row = vpPosition)
+
+        pushViewport(dataViewport(xData = xlim, yscale = ylim, extension = 0, clip = TRUE,
+                                  layout.pos.col = 1, layout.pos.row = vpPosition))
+    }
     
-    pushViewport(dataViewport(xData = xlim, yData = ylim, extension = 0,
-                              layout.pos.col=1, layout.pos.row = vpPosition))
     col <- getColor(gdObject)
     lwd <- getLwd(gdObject)
     lty <- getLty(gdObject)  
