@@ -98,7 +98,7 @@ setMethod("getID", signature("Gene"), function(obj) obj@id)
 setMethod("getID", signature("Transcript"), function(obj) obj@id)
 
 ##
-## this is being used in two different ways
+## XXX: this is being used in two different ways
 ##
 setGeneric("getType", def=function(obj,...) standardGeneric("getType"))
 setMethod("getType", signature("Gene"),function(obj) obj@type)
@@ -515,101 +515,105 @@ transcriptModule <- function(vplayout){
 #GenericArray                #
 ##############################
 setMethod("drawGD", signature("GenericArray"), function(gdObject, minBase, maxBase, vpPosition) {
-    intensity = getIntensity(gdObject)
+  intensity = getIntensity(gdObject)
 
-    ylim <- getPar(gdObject, "ylim")
-    xlim <- getPar(gdObject, "xlim")
-    if (is.null(xlim)) xlim <- c(minBase, maxBase)
-    if (is.null(ylim)) ylim <- range(intensity, na.rm=TRUE)
+  ylim <- getPar(gdObject, "ylim")
+  xlim <- getPar(gdObject, "xlim")
+  if (is.null(xlim)) xlim <- c(minBase, maxBase)
+  if (is.null(ylim)) ylim <- range(intensity, na.rm=TRUE)
+  
+  pushViewport(dataViewport(xData = xlim, yData = intensity, extension = 0,
+                            layout.pos.col=1, layout.pos.row = vpPosition, yscale = ylim))
+  lwd = getLwd(gdObject)
+  lty = getLty(gdObject)
+  color = getColor(gdObject)
 
-    pushViewport(dataViewport(xData = xlim, yData = intensity, extension = 0,
-                              layout.pos.col=1, layout.pos.row = vpPosition, yscale = ylim))
-    lwd = getLwd(gdObject)
-    lty = getLty(gdObject)
-    color = getColor(gdObject)
 
-    if(length(getProbeEnd(gdObject)) > 0) {
-        probepos=cbind(getProbeStart(gdObject), getProbeEnd(gdObject))
-        for(s in seq(along=intensity[1,])){
-            for(p in seq(along=intensity[,1])){
-                grid.lines(c(probepos[p,1],probepos[p,2]), c(intensity[p,s],intensity[p,s]),
-                           default.units = "native", gp = gpar(col=col, lwd = lwd, lty = lty))
-            }
-        }
+  whProbes <- getProbeStart(gdObject) >= minBase & getProbeStart(gdObject) < maxBase
+  
+  if(length(getProbeEnd(gdObject)) > 0) {
+    probepos=cbind(getProbeStart(gdObject), getProbeEnd(gdObject))
+    for(s in seq(along=intensity[1,])){
+      for(p in seq(along=intensity[,1])){
+        grid.lines(c(probepos[p,1],probepos[p,2]), c(intensity[p,s],intensity[p,s]),
+                   default.units = "native", gp = gpar(col=col, lwd = lwd, lty = lty))
+      }
+    }
+  }
+  else{
+    if(getType(gdObject) == "line"){
+      probeStart = getProbeStart(gdObject) 
+      ##      if(length(probeStart) == dim(intensity)[2]){
+      ##        for(p in seq(along=probeStart)){
+      ##          ord = order(probeStart)
+      ##          probepos = probeStart[ord]
+      ##          intensityOrd = intensity[ord,]
+      ##          lwdInd = 1
+      ##          colInd = 1
+      ##          ltyInd = 1
+      ##          if(length(color) == length(intensity[1,])) colInd = p
+      ##          if(length(lwd) == length(intensity[1,])) lwdInd = p
+      ##          if(length(lty) == length(intensity[1,])) ltyInd = p
+      ##          grid.lines(probepos, intensityOrd, default.units = "native",
+      ##            gp = gpar(col=color[colInd], lwd = lwd[lwdInd], lty = lty[ltyInd]))
+      ##       }
+      ##     }
+      ##     else{
+      ord = order(probeStart)
+      probepos = probeStart[ord]
+      intensity = intensity[ord,]
+      for(p in seq(along=intensity[1,])){
+        lwdInd = 1
+        colInd = 1
+        ltyInd = 1
+        if(length(color) == length(intensity[1,])) colInd = p
+        if(length(lwd) == length(intensity[1,])) lwdInd = p
+        if(length(lty) == length(intensity[1,])) ltyInd = p
+        grid.lines(probepos, intensity[,p], default.units = "native",
+                   gp = gpar(col=color[colInd], lwd = lwd[lwdInd], lty = lty[ltyInd]))
+      }
+      ##}
     }
     else{
-        if(getType(gdObject) == "line"){
-            probeStart = getProbeStart(gdObject) 
-            ##      if(length(probeStart) == dim(intensity)[2]){
-            ##        for(p in seq(along=probeStart)){
-            ##          ord = order(probeStart)
-            ##          probepos = probeStart[ord]
-            ##          intensityOrd = intensity[ord,]
-            ##          lwdInd = 1
-            ##          colInd = 1
-            ##          ltyInd = 1
-            ##          if(length(color) == length(intensity[1,])) colInd = p
-            ##          if(length(lwd) == length(intensity[1,])) lwdInd = p
-            ##          if(length(lty) == length(intensity[1,])) ltyInd = p
-            ##          grid.lines(probepos, intensityOrd, default.units = "native",
-            ##            gp = gpar(col=color[colInd], lwd = lwd[lwdInd], lty = lty[ltyInd]))
-            ##       }
-            ##     }
-            ##     else{
-            ord = order(probeStart)
-            probepos = probeStart[ord]
-            intensity = intensity[ord,]
-            for(p in seq(along=intensity[1,])){
-                lwdInd = 1
-                colInd = 1
-                ltyInd = 1
-                if(length(color) == length(intensity[1,])) colInd = p
-                if(length(lwd) == length(intensity[1,])) lwdInd = p
-                if(length(lty) == length(intensity[1,])) ltyInd = p
-                grid.lines(probepos, intensity[,p], default.units = "native",
-                           gp = gpar(col=color[colInd], lwd = lwd[lwdInd], lty = lty[ltyInd]))
-            }
-            ##}
-        }
-        else{
-            probeStart = getProbeStart(gdObject)
-            pSize = getPointSize(gdObject)
-            pch = getPch(gdObject)
-            ##    if(dim(probeStart)[2] == dim(intensity)[2]){
-            ##     for(p in seq(along=probeStart[1,])){
-            ##       pSizeInd = 1
-            ##       colInd = 1
-            ##       pchInd = 1
-            ##       if(length(color) == length(intensity[1,])) colInd = p
-            ##       if(length(pSize) == length(intensity[1,])) pSizeInd = p
-            ##       if(length(pch) == length(intensity[1,])) pchInd = p          
-            ##      grid.points(probeStart[,p], intensity[,p], default.units = "native",
-            ## gp = gpar(col=color[colInd]),size = unit(pSize[pSizeInd],"char"), pch = pch [pchInd])
-            ##    }
-            ##  }
-            ##  else{
-            for(p in seq(along=intensity[1,])){
-                pSizeInd = 1
-                colInd = 1
-                pchInd = 1
-                if(length(color) == length(intensity[1,])) colInd = p
-                if(length(pSize) == length(intensity[1,])) pSizeInd = p
-                if(length(pch) == length(intensity[1,])) pchInd = p
-
-                grid.points(probeStart, intensity[,p], default.units = "native",
-                            gp = gpar(col=color[colInd]),size = unit(pSize[pSizeInd],"char"), pch = pch[pchInd])
-                ##   }
-            }
-        }
+      probeStart = getProbeStart(gdObject)
+      pSize = getPointSize(gdObject)
+      pch = getPch(gdObject)
+      ##    if(dim(probeStart)[2] == dim(intensity)[2]){
+      ##     for(p in seq(along=probeStart[1,])){
+      ##       pSizeInd = 1
+      ##       colInd = 1
+      ##       pchInd = 1
+      ##       if(length(color) == length(intensity[1,])) colInd = p
+      ##       if(length(pSize) == length(intensity[1,])) pSizeInd = p
+      ##       if(length(pch) == length(intensity[1,])) pchInd = p          
+      ##      grid.points(probeStart[,p], intensity[,p], default.units = "native",
+      ## gp = gpar(col=color[colInd]),size = unit(pSize[pSizeInd],"char"), pch = pch [pchInd])
+      ##    }
+      ##  }
+      ##  else{
+      for(p in seq(along=intensity[1,])){
+        pSizeInd = 1
+        colInd = 1
+        pchInd = 1
+        if(length(color) == ncol(intensity)) colInd = p
+        if(length(pSize) == ncol(intensity)) pSizeInd = p
+        if(length(pch) == ncol(intensity)) pchInd = p
+        
+        grid.points(probeStart[whProbes], intensity[whProbes, p], default.units = "native",
+                    gp = gpar(col=color[colInd]),size = unit(pSize[pSizeInd],"char"),
+                    pch = pch[pchInd])
+        ##   }
+      }
     }
+  }
     
-    sObj <- getSegmentation(gdObject)
-    if (!is.null(sObj)) {
-        drawSegments(sObj, minBase, maxBase)
+  sObj <- getSegmentation(gdObject)
+  if (!is.null(sObj)) {
+    drawSegments(sObj, minBase, maxBase)
     }
-    
-    grid.yaxis()
-    popViewport(1)
+  
+  grid.yaxis()
+  popViewport(1)
 })
 
 drawSegments <- function(sObj, minBase, maxBase) {
@@ -647,7 +651,7 @@ setMethod("drawGD", signature("BaseTrack"), function(gdObject, minBase, maxBase,
     ylim <- getPar(gdObject, "ylim")
     xlim <- getPar(gdObject, "xlim")
     if (is.null(xlim)) xlim <- c(minBase, maxBase)
-    if (is.null(ylim)) ylim <- range(baseValue, na.rm=TRUE)
+    if (is.null(ylim)) ylim <- range(baseValue, na.rm = TRUE)
 
     drawAxis <- getPar(gdObject, "drawAxis")
     if (is.null(drawAxis)) drawAxis <- TRUE
@@ -656,10 +660,13 @@ setMethod("drawGD", signature("BaseTrack"), function(gdObject, minBase, maxBase,
         pushViewport(dataViewport(xData = xlim, yData = ylim, extension = 0,
                                   layout.pos.col = 1, layout.pos.row = vpPosition))
     } else {
-##         xData=c(minBase, maxBase), extension = 0,
-##                               clip = TRUE, yscale = c(0, 40),
-##                               layout.pos.col=1, layout.pos.row = vpPosition)
-
+        ## XXX: THESE ARE TOTAL HACKS FOR NOW.
+        if(is.na(ylim) || diff(ylim) == 0)
+            ylim <- c(0,.1)
+        if(any(!is.finite(ylim))) {
+            ylim <- c(0,.1)
+        }
+        cat("ylim in drawGD:", ylim, "\n")
         pushViewport(dataViewport(xData = xlim, yscale = ylim, extension = 0, clip = TRUE,
                                   layout.pos.col = 1, layout.pos.row = vpPosition))
     }
