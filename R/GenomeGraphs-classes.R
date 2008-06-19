@@ -140,7 +140,7 @@ geneBiomart <- function(id, biomart, type = "ensembl_gene_id", dp = NULL) {
                    "structure_exon_chrom_start", "structure_exon_chrom_end", "structure_exon_rank",
                    "structure_transcript_chrom_strand", "structure_biotype"),
                  filters = type, values = id, mart = biomart)
-
+    
     dp <- dpConcat(dp, DisplayPars(size = 1, color = "orange", plotId = FALSE, idRotation = 90, idColor = "white"))
     new("AnnotationTrack", chr = 0, strand = -1,
         regions = data.frame(start = ens[,4], end = ens[,5], feature = ens[,8], group = ens[,1], ID = ens[,3]),
@@ -149,12 +149,12 @@ geneBiomart <- function(id, biomart, type = "ensembl_gene_id", dp = NULL) {
 
 geneRegionBiomart <- function(chr, start, end, strand, biomart, dp = NULL, chrFunction = function(x) x,
                               strandFunction = function(x) x) {
-  ens <- getBM(c("structure_gene_stable_id","structure_transcript_stable_id", "structure_exon_stable_id",
-                 "structure_exon_chrom_start","structure_exon_chrom_end", "structure_exon_rank",
-                 "structure_transcript_chrom_strand","structure_biotype"),
-               filters = c("chromosome_name", "start", "end", "strand"),
-               values = list(chrFunction(chr), start, end, strandFunction(strand)), mart = biomart)
-
+    ens <- getBM(c("structure_gene_stable_id","structure_transcript_stable_id", "structure_exon_stable_id",
+                   "structure_exon_chrom_start","structure_exon_chrom_end", "structure_exon_rank",
+                   "structure_transcript_chrom_strand","structure_biotype"),
+                 filters = c("chromosome_name", "start", "end", "strand"),
+                 values = list(chrFunction(chr), start, end, strandFunction(strand)), mart = biomart)
+    
     dp <- dpConcat(dp, DisplayPars(size = 1, color = "orange", plotId = FALSE, idRotation = 90, idColor = "white",
                                    C_segment = "burlywood4",
                                    D_segment = "lightblue",
@@ -179,7 +179,7 @@ geneRegionBiomart <- function(chr, start, end, strand, biomart, dp = NULL, chrFu
                                    snRNA_pseudogene = "coral3",   
                                    tRNA_pseudogene = "antiquewhite3",
                                    V_segment =  "aquamarine", dp = dp))
-
+    
     new("AnnotationTrack", chr = chr, strand = strand,
         regions = data.frame(start = ens[,4], end = ens[,5], feature = ens[,8], group = ens[,1], ID = ens[,3]),
         dp = dp)
@@ -257,7 +257,7 @@ setClass("GeneRegion", contains = "gdObject",
 setMethod("initialize", "GeneRegion", function(.Object,...){
     .Object <- callNextMethod()
     strand  = switch(.Object@strand, "+" = 1, "-" = -1)
-        
+    
     ##-- changing start and end positions to capture genes on the edges. 
     .Object@start <- .Object@start - 2000
     .Object@end <- .Object@end + 2000
@@ -289,25 +289,25 @@ setClass("Transcript", contains = "gdObject",
                    transcriptSize = 1,
                    numOfTranscripts = 0,
                    dp = DisplayPars(size = 4,
-                     color = "cornflowerblue",
-                     plotId = FALSE))
+                   color = "cornflowerblue",
+                   plotId = FALSE))
          );
 
 setMethod("initialize", "Transcript", function(.Object,...){
-  .Object <- callNextMethod()
-  .Object@ens <- getBM(c("structure_gene_stable_id","structure_transcript_stable_id","structure_exon_stable_id",
-                         "structure_exon_chrom_start","structure_exon_chrom_end","structure_exon_rank",
-                         "structure_transcript_chrom_strand","structure_biotype"),
-                       filters = .Object@type, values=.Object@id,mart=.Object@biomart)
+    .Object <- callNextMethod()
+    .Object@ens <- getBM(c("structure_gene_stable_id","structure_transcript_stable_id","structure_exon_stable_id",
+                           "structure_exon_chrom_start","structure_exon_chrom_end","structure_exon_rank",
+                           "structure_transcript_chrom_strand","structure_biotype"),
+                         filters = .Object@type, values=.Object@id,mart=.Object@biomart)
 
-  if (is.null(.Object@ens)) {
-      setPar(.Object@dp, "size", 0)
-      .Object@numOfTranscripts <- 0
-  }
-  else {
-      .Object@numOfTranscripts <- length(unique(.Object@ens[,2]))
-  }
-  .Object
+    if (is.null(.Object@ens)) {
+        setPar(.Object@dp, "size", 0)
+        .Object@numOfTranscripts <- 0
+    }
+    else {
+        .Object@numOfTranscripts <- length(unique(.Object@ens[,2]))
+    }
+    .Object
 })
 
 setClass("TranscriptRegion", contains = "gdObject", 
@@ -380,16 +380,16 @@ setClass("ExonArray", contains = "gdObject",
                         nProbes = "numeric",
                         displayProbesets = "logical"),
          prototype(dp = DisplayPars(size = 5,
-                     displayProbesets = TRUE,
-                     probesetSize = 1,
-                     color = "firebrick1",
-                     mapColor = "dodgerblue2",
-                     plotMap = TRUE,
-                     lwd = 1,
-                     lty = "solid",
-                     probeSetLwd = 1,
-                     probeSetColor = "grey"
-                     ))
+                   displayProbesets = TRUE,
+                   probesetSize = 1,
+                   color = "firebrick1",
+                   mapColor = "dodgerblue2",
+                   plotMap = TRUE,
+                   lwd = 1,
+                   lty = "solid",
+                   probeSetLwd = 1,
+                   probeSetColor = "grey"
+                   ))
          );
 
 setClass("GeneModel", contains = "gdObject", 

@@ -6,7 +6,7 @@
   collection of objects are given as a list and these will then be plotten
   in the order given.
 }
-\usage{gdPlot(gdObjects, minBase = NA, maxBase = NA, highlightRegions = NULL)
+\usage{gdPlot(gdObjects, minBase = NA, maxBase = NA, highlightRegions = NULL, labelRot = 0)
 }
 \arguments{
   \item{gdObjects}{ This is either a list of \code{gdObjects} which will
@@ -23,6 +23,8 @@
   \item{highlightRegions}{\code{highlightRegions} defines a set of
     regions to overlay as rectangles on the plot. This argument is
     either a list or a single HighlightRegion object. 
+  }
+  \item{labelRot}{Rotate the track labels \code{labelRot} degrees. 
   }
 }
 \references{http://www.stat.berkeley.edu/~steffen/}
