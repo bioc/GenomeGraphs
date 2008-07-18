@@ -57,14 +57,14 @@ to connect to the Ensembl BioMart database using the useMart function
 of the biomaRt package.
 
 <<>>=
-mart = useMart("ensembl", dataset="hsapiens_gene_ensembl")
+mart <- useMart("ensembl", dataset="hsapiens_gene_ensembl")
 @
 
 Next we can retrieve the gene structure of the gene of interest.
 
 <<fig=TRUE>>=
-gene = new("Gene", id = "ENSG00000095203", type="ensembl_gene_id", biomart = mart)
-gdPlot(list(gene), minBase= 110974000, maxBase = 111122900)
+gene <- new("Gene", id = "ENSG00000095203", type="ensembl_gene_id", biomart = mart)
+gdPlot(gene) 
 @
 
 \subsection{Adding alternative transcripts}
@@ -72,8 +72,8 @@ gdPlot(list(gene), minBase= 110974000, maxBase = 111122900)
 To add alternative transcripts you first have to create a \Robject{Transcript} object.
 Note that the order of the objects in the list determines the order in the plot.
 <<fig=TRUE>>=
-transcript = new("Transcript", id = "ENSG00000095203", type="ensembl_gene_id", biomart = mart)
-gdPlot(list(gene, transcript), minBase= 110974000, maxBase = 111122900)
+transcript <- new("Transcript", id = "ENSG00000095203", type="ensembl_gene_id", biomart = mart)
+gdPlot(list(gene, transcript))
 @  
 
 \subsection{Plotting a gene region}
@@ -85,20 +85,19 @@ below we will retrieve the genes on the forward (+) strand only and
 add a genomic axis as well to give us the base positions.
 
 <<fig=TRUE>>=
-plusStrand = new("GeneRegion", chromosome = "17", start = 30450000, end = 30550000, strand = "+", biomart = mart)
-genomeAxis = new("GenomeAxis", add53=TRUE)
-gdPlot(list(genomeAxis, plusStrand), minBase = 30450000, maxBase =  30550000)
+plusStrand <- new("GeneRegion", chromosome = "17", start = 30450000, end = 30550000, strand = "+", biomart = mart)
+genomeAxis <- new("GenomeAxis", add53 = TRUE)
+gdPlot(list(genomeAxis, plusStrand))
 @
-
 
 Let's now add the genes on the negative strand as well and an ideogram
 of chromosome 17, highlighting the region we are looking at.
 
 
 <<fig=TRUE>>=
-minStrand = new("GeneRegion", chromosome = "17", start = 30450000, end = 30550000, strand = "-", biomart = mart)
-ideogram = new("Ideogram", chromosome = "17")
-genomeAxis = new("GenomeAxis", add53=TRUE, add35=TRUE)
+minStrand <- new("GeneRegion", chromosome = "17", start = 30450000, end = 30550000, strand = "-", biomart = mart)
+ideogram <- new("Ideogram", chromosome = "17")
+genomeAxis <- new("GenomeAxis", add53=TRUE, add35=TRUE)
 gdPlot(list(ideogram, plusStrand, genomeAxis, minStrand), minBase = 30450000, maxBase =  30550000)
 @
 
@@ -124,9 +123,8 @@ genesplus <- new("GeneRegion", start = minbase, end = maxbase,
 genesmin <- new("GeneRegion", start = minbase, end = maxbase, 
                 strand = "-", chromosome = "3", biomart=mart)
 
-seg <- new("Segmentation", segments = segments, 
-           segmentStart = segStart, segmentEnd = segEnd, 
-           dp = DisplayPars(color = "black", lwd=2,lty = "solid"))
+seg <- makeSegmentation(segStart, segEnd, segments, 
+                        dp = DisplayPars(color = "black", lwd=2,lty = "solid"))
 
 cop <- new("GenericArray", intensity  = cn, probeStart = probestart, 
            segmentation =  seg, dp = DisplayPars(size=3, color = "seagreen", type="dot"))
@@ -137,7 +135,7 @@ expres <- new("GenericArray", intensity = intensity, probeStart = exonProbePos,
 genomeAxis <- new("GenomeAxis", add53 = TRUE, add35=TRUE)
 
 gdPlot(list(a=ideog,b=expres,c=cop,d=genesplus,e=genomeAxis,f=genesmin), 
-       minBase = minbase, maxBase =maxbase)
+       minBase = minbase, maxBase =maxbase, labelCex = 2)
 @ 
 
 \subsection{Exon array data}
@@ -156,8 +154,7 @@ exon <- new("ExonArray", intensity = unrData, probeStart = unrPositions[,3],
 affyModel <- new("GeneModel", exonStart = unrPositions[,3], exonEnd =  unrPositions[,4])
 gene <- new("Gene", id = "ENSG00000009307", biomart = mart)
 transcript <- new("Transcript", id ="ENSG00000009307" , biomart = mart)
-legend <- new("Legend", legend = c("affyModel","gene"), 
-              dp = DisplayPars(color= c("darkgreen","orange")))
+legend <- makeLegend(c("affyModel","gene"), fill = c("darkgreen","orange"))
 
 gdPlot(list(title, exon, affyModel, gene, transcript, legend), 
        minBase = min(exon@probeStart), maxBase=max(exon@probeEnd))
@@ -187,7 +184,7 @@ conserv <- yeastCons1[yeastCons1[,1] > minB & yeastCons1[,1] < maxB, ]
 consTrack <- new("BaseTrack", base = conserv[, 1], value = conserv[,2],
                  dp = DisplayPars(lwd=.2, ylim = c(0, 1.25), color = "darkblue"))
 
-gdPlot(list(grP, gaxis, grM, "conservation" = consTrack), minBase = minB, maxBase = maxB)
+gdPlot(list(grP, gaxis, grM, "conservation" = consTrack)) 
 @ 
 
 
@@ -215,22 +212,18 @@ gdPlot(new("GeneRegion", start = 9000, end = 15000, biomart = yeastMart,
            strand = "-", chromosome = "I", dp = DisplayPars(plotId=TRUE)))
 @ 
 
-\subsection{HighlightRegions} 
-We can also highlight vertical areas of interest using
-\texttt{HighlightRegions}. This allows us to highlight certain areas
-of the plot. The key things to notice here are that the coordinates
-for the horizontal points are in genomic coordinates and the vertical
-coordinates represent the ``tracks'' that you wish to be highlighted. 
+\subsection{Overlays} 
+\texttt{Overlays} can be used to annotate different regions of the
+plot. Currently, we can draw boxes and write text on the plot.
 
 <<echo=TRUE, fig=TRUE>>=
 ga <- new("GenomeAxis")
 grF <- new("GeneRegion", start = 10000, end = 20000, chromosome = "I", strand = "+", biomart = yeastMart)
 grR <- new("GeneRegion", start = 10000, end = 20000, chromosome = "I", strand = "-", biomart = yeastMart)
 bt <- new("BaseTrack", base = yeastCons1[,1], value = yeastCons1[,2])
-hr1 <- new("HighlightRegion", start = 11000, end = 13000)
-hr2 <- new("HighlightRegion", start = 15900, end = 16500)
-          
-gdPlot(list(grF, ga, grR, bt), highlightRegions = list(hr1, hr2))
+hr1 <- makeRectangleOverlay(start = 11000, end = 13000)
+hr2 <- makeRectangleOverlay(start = 15900, end = 16500)
+gdPlot(list(grF, ga, grR, bt), overlays = list(hr1, hr2))
 @ 
 
 A little nifty feature is to allow alpha blending to make things
@@ -238,18 +231,19 @@ slightly transparent. If the device you wish to plot on however, does
 not support transparency then you will get a warning. 
 
 <<echo=TRUE,fig=TRUE>>=
-hr <- new("HighlightRegion", start = 11000, end = 13000, region = c(1,3), 
+ro <- makeRectangleOverlay(start = 11000, end = 13000, region = c(1,3), 
           dp = DisplayPars(color = "green", alpha = .3))
-gdPlot(list(grF, ga, grR, bt), highlightRegions = hr)
+to <- makeTextOverlay("here is some text", xpos = 15000, ypos = .95)
+gdPlot(list(grF, ga, grR, bt), overlay = c(ro, to))
 @ 
 
 Also, one can use "absolute" coordinates to specify a region just in
 case one wants to be a bit more precise. 
 <<fig=TRUE>>=
-hrR <- new("HighlightRegion", start = .1, end = .3, coords = "absolute",
-           dp = DisplayPars(color = "grey", alpha = 0, lty = "dashed"),
-           region = c(.4,.7))
-gdPlot(list(grF, ga, grR, bt), highlightRegions = list(hr, hrR))
+roR <- makeRectangleOverlay(start = .1, end = .3, coords = "absolute",
+                            dp = DisplayPars(fill = "grey", alpha = .2, lty = "dashed"),
+                            region = c(.4,.7))
+gdPlot(list(grF, ga, grR, bt), overlays = list(ro, roR))
 @ 
 
 \subsection{GenomeGraphs Classes}

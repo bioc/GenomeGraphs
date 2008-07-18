@@ -25,7 +25,7 @@ setMethod("show",signature(object="GeneRegion"),
                  object@end,"\n Chromosome: ",object@chromosome,"\n Exons in Ensembl: \n", sep="")
     cat(res)
     print(object@ens[1:len,])
-    res <- paste("\n There are ",length(object@ens[,1])-len," more rows", sep="")
+    res <- paste("\n There are ", length(object@ens[,1]) - len, " more rows", sep="")
     cat(res)
 })
 
@@ -447,8 +447,8 @@ setMethod("drawGD", signature("Transcript"), function(gdObject, minBase, maxBase
                     gp = gpar(cex = getCex(gdObject)), default.units = "native")
         } 
         for(i in seq(along=trans[,1])){
-            grid.rect(trans[i,4],10,width=trans[i,4]-trans[i,5],height=30,gp=gpar(col = "black",fill = color),
-                      default.units="native", just="right")
+          grid.rect(trans[i,4],5,width=trans[i,4]-trans[i,5],height=25,gp=gpar(col = "black",fill = color),
+                    default.units="native", just=c("right","bottom"))
         }
         if(trans[1,6] == 1){ pp = 16}
         else{ pp = 8}
@@ -517,6 +517,7 @@ transcriptModule <- function(vplayout){
 setMethod("drawGD", signature("GenericArray"), function(gdObject, minBase, maxBase, vpPosition) {
   intensity = getIntensity(gdObject)
 
+  ## abstract this operation for all functions :
   ylim <- getPar(gdObject, "ylim")
   xlim <- getPar(gdObject, "xlim")
   if (is.null(xlim)) xlim <- c(minBase, maxBase)
@@ -543,22 +544,6 @@ setMethod("drawGD", signature("GenericArray"), function(gdObject, minBase, maxBa
   else{
     if(getType(gdObject) == "line"){
       probeStart = getProbeStart(gdObject) 
-      ##      if(length(probeStart) == dim(intensity)[2]){
-      ##        for(p in seq(along=probeStart)){
-      ##          ord = order(probeStart)
-      ##          probepos = probeStart[ord]
-      ##          intensityOrd = intensity[ord,]
-      ##          lwdInd = 1
-      ##          colInd = 1
-      ##          ltyInd = 1
-      ##          if(length(color) == length(intensity[1,])) colInd = p
-      ##          if(length(lwd) == length(intensity[1,])) lwdInd = p
-      ##          if(length(lty) == length(intensity[1,])) ltyInd = p
-      ##          grid.lines(probepos, intensityOrd, default.units = "native",
-      ##            gp = gpar(col=color[colInd], lwd = lwd[lwdInd], lty = lty[ltyInd]))
-      ##       }
-      ##     }
-      ##     else{
       ord = order(probeStart)
       probepos = probeStart[ord]
       intensity = intensity[ord,]
@@ -572,25 +557,11 @@ setMethod("drawGD", signature("GenericArray"), function(gdObject, minBase, maxBa
         grid.lines(probepos, intensity[,p], default.units = "native",
                    gp = gpar(col=color[colInd], lwd = lwd[lwdInd], lty = lty[ltyInd]))
       }
-      ##}
     }
     else{
       probeStart = getProbeStart(gdObject)
       pSize = getPointSize(gdObject)
       pch = getPch(gdObject)
-      ##    if(dim(probeStart)[2] == dim(intensity)[2]){
-      ##     for(p in seq(along=probeStart[1,])){
-      ##       pSizeInd = 1
-      ##       colInd = 1
-      ##       pchInd = 1
-      ##       if(length(color) == length(intensity[1,])) colInd = p
-      ##       if(length(pSize) == length(intensity[1,])) pSizeInd = p
-      ##       if(length(pch) == length(intensity[1,])) pchInd = p          
-      ##      grid.points(probeStart[,p], intensity[,p], default.units = "native",
-      ## gp = gpar(col=color[colInd]),size = unit(pSize[pSizeInd],"char"), pch = pch [pchInd])
-      ##    }
-      ##  }
-      ##  else{
       for(p in seq(along=intensity[1,])){
         pSizeInd = 1
         colInd = 1
@@ -602,30 +573,62 @@ setMethod("drawGD", signature("GenericArray"), function(gdObject, minBase, maxBa
         grid.points(probeStart[whProbes], intensity[whProbes, p], default.units = "native",
                     gp = gpar(col=color[colInd]),size = unit(pSize[pSizeInd],"char"),
                     pch = pch[pchInd])
-        ##   }
       }
     }
   }
     
   sObj <- getSegmentation(gdObject)
   if (!is.null(sObj)) {
-    drawSegments(sObj, minBase, maxBase)
-    }
+    .drawSegments(sObj, minBase, maxBase)
+  }
   
   grid.yaxis()
   popViewport(1)
 })
 
-drawSegments <- function(sObj, minBase, maxBase) {
+setMethod("drawGD", signature("Segmentation"), function(gdObject, minBase, maxBase, vpPosition) {
+  segments <- getSegments(gdObject)
+  
+  ylim <- getPar(gdObject, "ylim")
+  xlim <- getPar(gdObject, "xlim")
+  if (is.null(xlim)) xlim <- c(minBase, maxBase)
+  if (is.null(ylim)) ylim <- range(segments, na.rm=TRUE)
+  
+  pushViewport(dataViewport(xData = xlim, yData = intensity, extension = 0,
+                            layout.pos.col=1, layout.pos.row = vpPosition, yscale = ylim))
+  .drawSegments(gdObject, minBase, maxBase)
+  grid.yaxis(gp=gpar(cex=getPar(gdObject,"cex.axis")))
+  popViewport(1)
+})
+
+.drawSegments <- function(sObj, minBase, maxBase) {
     segments <- getSegments(sObj)
     segmentStart <- getSegmentStart(sObj)
     segmentEnd <- getSegmentEnd(sObj)
 
     if(length(segments) > 0) {
+        colVal <- getColor(sObj) 
+        lwdVal <- getLwd(sObj)   
+        ltyVal <- getLty(sObj)   
+
+        ## this just fixes up a real annoyance of having to make things a list. 
+        if (length(segments) == 1 && !is.list(colVal))
+          colVal <- list(colVal)
+        if (length(segments) == 1 && !is.list(ltyVal))
+          ltyVal <- list(ltyVal)
+        if (length(segments) == 1 && !is.list(lwdVal))
+          lwdVal <- list(lwdVal)
+        
+        ## make the parameters lists of values equal to the number of segments
+        lwdVal <- rep(lwdVal,length=length(segments)) #EP
+        ltyVal <- rep(ltyVal,length=length(segments)) #EP
+        colVal <- rep(colVal,length=length(segments)) #EP
         for(k in seq(along = segments)) {
             whDraw <- !((segmentStart[[k]] > maxBase) |
                         (segmentEnd[[k]] < minBase))
-                
+            currLwd<-rep(lwdVal[[k]],length=length(segments[[k]]))
+            currLty<-rep(ltyVal[[k]],length=length(segments[[k]]))
+            currCol<-rep(colVal[[k]],length=length(segments[[k]]))
             for(s in seq(along=segments[[k]])){
                 if (whDraw[s]) {
                     ss <- segmentStart[[k]][s]
@@ -634,16 +637,12 @@ drawSegments <- function(sObj, minBase, maxBase) {
                     ee <- if (ee > maxBase) maxBase else ee
                     
                     grid.lines(c(ss,ee), c(segments[[k]][s], segments[[k]][s]), default.units = "native",
-                               gp = gpar(col=getColor(sObj), lwd = getLwd(sObj), lty = getLty(sObj)))
+                               gp = gpar(col=currCol[s], lwd = currLwd[s], lty =currLty[s] )) #EP
                 }
             }
         }
     }
 }
-
-########################################
-#Plots sequencing base frequencies     #
-########################################
 
 setMethod("drawGD", signature("BaseTrack"), function(gdObject, minBase, maxBase, vpPosition) {
     baseValue <- getBaseValue(gdObject)
@@ -651,7 +650,7 @@ setMethod("drawGD", signature("BaseTrack"), function(gdObject, minBase, maxBase,
     ylim <- getPar(gdObject, "ylim")
     xlim <- getPar(gdObject, "xlim")
     if (is.null(xlim)) xlim <- c(minBase, maxBase)
-    if (is.null(ylim)) ylim <- range(baseValue, na.rm = TRUE)
+    if (is.null(ylim)) ylim <- range(baseValue, na.rm = TRUE, finite = TRUE)
 
     drawAxis <- getPar(gdObject, "drawAxis")
     if (is.null(drawAxis)) drawAxis <- TRUE
@@ -687,7 +686,7 @@ setMethod("drawGD", signature("BaseTrack"), function(gdObject, minBase, maxBase,
 
     sObj <- getSegmentation(gdObject)
     if (!is.null(sObj)) {
-        drawSegments(sObj, minBase, maxBase)
+      .drawSegments(sObj, minBase, maxBase)
     }
     popViewport()
 })
@@ -877,39 +876,66 @@ setMethod("drawGD", signature("Title"), function(gdObject, minBase, maxBase, vpP
 
 ####################################################
 #Adding an axis containing the genomic coordinates #
-#current code from tilingArray package             # 
 ####################################################
+###################################
+## Code from tilingArray package ##
+###################################
+.ticks <- function(x){
+  rx = range(x)
+  lz = log((rx[2]-rx[1])/3, 10)
+  fl = floor(lz)
+  if( lz-fl > log(5, 10))
+    fl = fl +  log(5, 10)
+  tw = round(10^fl)
+  i0 = ceiling(rx[1]/tw)
+  i1 = floor(rx[2]/tw)
+  seq(i0, i1)*tw
+}
+
+
+
 setMethod("drawGD", signature("GenomeAxis"), function(gdObject, minBase, maxBase, vpPosition) {
     pushViewport(dataViewport(xData=c(minBase, maxBase), yscale=c(-1, 1), extension = 0,
                               layout.pos.col = 1, layout.pos.row = vpPosition))
     grid.lines(c(minBase, maxBase), c(0, 0), default.units = "native")
 
     ## here we plot the top level ticks
-    tck <- ticks(c(minBase, maxBase))
+    tck <- .ticks(c(minBase, maxBase))
+
+    ## reformat if byValue != 1
+    tckText <- tck
+    formatValue <- "d" #to be passed to formatC
+    byValue <- getPar(gdObject, "byValue")
+
+    if(byValue != 1) {
+        tckText <- tckText/byValue
+        formatValue <- "g"
+    }
+
+    y <- getPar(gdObject,"distFromAxis")*rep(c(.4, -.4), length(tck))[1:length(tck)]
+    labelPos <- getPar(gdObject,"labelPos")
+    y <- switch(labelPos,"alternating" = y,"revAlternating" = -y,"above" = abs(y),"below"= -abs(y))
     
-    y <- rep(c(.4, -.4), length(tck))[1:length(tck)]
-    grid.text(label = formatC(tck, format = "d"), x = tck, y = y, just = c("centre", "centre"),
-              gp = gpar(cex=1), default.units = "native")
+    grid.text(label = formatC(tckText, format = formatValue), x = tck, y = y, just = c("centre", "centre"),
+              gp = gpar(cex=getPar(gdObject,"cex")), default.units = "native")
     
     if (plotLittleTicks(gdObject)) {
-        ## sometimes the ticks function doesn't like to include the start base, this
-        ## makes the little ticks appear only in the middle. 
-        if (!(minBase %in% tck))
-            tck <- c(minBase, tck)
-        if (!(maxBase %in% tck))
-            tck <- c(tck, maxBase)
-
-        if (mean(diff(tck)) > diff(range(tck))/10) {
-            for (j in 1:(length(tck) - 1)) {
-              stcks <- ticks(tck[j:(j+1)])
-              stcks <- stcks[c(-1, -length(stcks))]
-              
-              grid.segments(x0 = stcks, x1 = stcks, y0 = -0.1, y1 = 0.1,  default.units = "native")
-
-              y <- rep(c(.15, -.15), length(stcks))[1:length(stcks)]
-              grid.text(label=formatC(stcks, format="d"), x = stcks, y = y,
-                        just = c("centre", "centre"), gp = gpar(cex=.65), default.units = "native")
-          }
+      if (!(minBase %in% tck))
+        tck <- c(minBase, tck)
+      if (!(maxBase %in% tck))
+        tck <- c(tck, maxBase)
+      
+      if (mean(diff(tck)) > diff(range(tck))/10) {
+        for (j in 1:(length(tck) - 1)) {
+          stcks <- .ticks(tck[j:(j+1)])
+          stcks <- stcks[c(-1, -length(stcks))]
+          
+          grid.segments(x0 = stcks, x1 = stcks, y0 = -0.1, y1 = 0.1,  default.units = "native")
+          
+          y <- rep(c(.15, -.15), length(stcks))[1:length(stcks)]
+          grid.text(label=formatC(stcks, format="d"), x = stcks, y = y,
+                    just = c("centre", "centre"), gp = gpar(cex=.65), default.units = "native")
+        }
       }
     }
     
@@ -931,25 +957,41 @@ setMethod("drawGD", signature("GenomeAxis"), function(gdObject, minBase, maxBase
 })
           
 ####################
-#Adding a legend   #
+# Adding a legend  #
 ####################
 setMethod("drawGD", signature("Legend"), function(gdObject, minBase, maxBase, vpPosition) {
-    pushViewport(dataViewport(xData=c(minBase,maxBase), yscale=c(0,5), extension=0,
-                              layout.pos.col=1, layout.pos.row=vpPosition))
-    step =  (maxBase - minBase) /(length(gdObject)+2)
-    pos = minBase + step
-    color = getColor(gdObject)
-    legend = getLegend(gdObject)
-    for(i in 1:length(legend)) {
-        grid.text(label = formatC(legend[i], format="d"), x= pos, y = 1,
-                  just = c("left","bottom"), default.units="native")
-        grid.rect(pos,3,width=(maxBase - minBase)/100,height=1,
-                  gp=gpar(col = color[i], fill=color[i]), default.units="native", just=c("left","bottom"))
-        pos = pos+step
+  pushViewport(dataViewport(xData=c(minBase,maxBase), yscale=c(0,10), extension=0,
+                            layout.pos.col=1, layout.pos.row=vpPosition)) 
+  color <- getPar(gdObject,"color")
+  cex <- getPar(gdObject,"cex")
+  legend <- gdObject@legend
+  ntext <- length(legend)
+  color <- rep(color,ntext)
+  cex <- rep(cex,ntext)
+  step <- (maxBase - minBase) /(ntext+2) 
+  pos <- minBase + step
+  
+  for(i in 1:ntext) {
+    grid.text(label = formatC(legend[i], format="d"), x= pos, y = 4,
+                  just = c("center","top"), default.units="native",gp=gpar(cex=cex,lineheight=1)) # add gpar stuff here
+    
+    if(!is.na(color[i])) {
+      grid.rect(pos,5,width=step/3,height=4,
+                gp=gpar(col = "black", fill=color[i]), default.units="native",
+                just=c("center","bottom"))
     }
-    popViewport()
+    pos <- pos + step
+  }
+  popViewport()
 })
-          
+
+setGeneric("showDisplayOptions", def = function(obj, ...) standardGeneric("showDisplayOptions"))
+setMethod("showDisplayOptions", signature("character"), function(obj) {
+  getClass(obj)@prototype@dp
+})
+setMethod("showDisplayOptions", signature("gdObject"), function(obj) {
+  obj@dp
+})
 
           
 

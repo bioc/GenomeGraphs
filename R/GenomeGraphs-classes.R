@@ -344,7 +344,8 @@ setClass("GenomeAxis", contains = "gdObject",
          prototype(add53 = FALSE,
                    add35 = FALSE,
                    littleTicks = FALSE,
-                   dp = DisplayPars(size = 1, color = "black"))
+                   dp = DisplayPars(size = 1, color = "black",
+                     cex=1, byValue = 1, distFromAxis = 1, labelPos = "alternating"))
          );
 
 setClass("Segmentation", contains = "gdObject",
@@ -423,14 +424,21 @@ setClass("MappedRead", contains = "gdObject",
                    lwd = 1))
          );
 
-setClassUnion("numericOrNull", c("numeric", "NULL"))
-setClass("HighlightRegion", contains = "gdObject",
-         representation(start = "numeric",
-                        end = "numeric",
-                        region = "numericOrNull",
-                        coords = "character"),
-         prototype(region = NULL,
-                   coords = "genomic",
-                   dp = DisplayPars(color = "black",  alpha = 0, lwd = 1, lty = "solid")
-                   ));
 
+makeLegend <- function(text, fill, cex) {
+  dp <- getClass("Legend")@prototype@dp
+  if (!missing(cex)) setPar(dp, "cex", cex)
+  if (!missing(fill)) setPar(dp, "color", fill)
+  new("Legend", legend = text, dp = dp)
+}
+
+makeSegmentation <- function(start, end, value, dp = NULL) {
+  if (!is.list(value) && !is.list(start) && !is.list(end)) {
+    start <- list(start)
+    end <- list(end)
+    value <- list(value)
+  }
+  if (is.null(dp))
+    dp <- getClass("RectangleOverlay")@prototype@dp
+  new("Segmentation", segments = value, segmentStart = start, segmentEnd = end, dp = dp)
+}
