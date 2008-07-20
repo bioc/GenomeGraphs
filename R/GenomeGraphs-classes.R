@@ -318,18 +318,36 @@ setClass("TranscriptRegion", contains = "gdObject",
                         ens = "data.frame"),
          prototype = prototype(dp = DisplayPars(size = 1))
          );
-
+########################################
 setClass("Ideogram", contains = "gdObject", 
          representation(chromosome = "character"),
          prototype(dp = DisplayPars(size = 1, color = "firebrickred3"))
          );
 
+makeIdeogram <- function(chromosome, dp = NULL){
+ if(missing(chromosome)) stop("Need to specify chromosome for creating an Ideogram")
+ if(is.numeric(chromosome)){
+   chromosome = as.character(chromosome)
+ }
+ if (is.null(dp))
+   dp <- getClass("Ideogram")@prototype@dp
+ new("Ideogram", chromosome = chromosome, dp = dp)
+}
+########################################
 setClass("Title", contains = "gdObject", 
          representation(title = "character"),
          prototype(dp = DisplayPars(size = 1, cex = 1,
                    color = "black"))
          );
 
+makeTitle <- function(text, cex, color, size) {
+  dp <- getClass("Title")@prototype@dp
+  if (!missing(cex)) setPar(dp, "cex", cex)
+  if (!missing(color)) setPar(dp, "color", color)
+  if (!missing(size)) setPar(dp, "size", size)
+  new("Title", title = text, dp = dp)
+}
+#######################################
 setClass("Legend", contains = "gdObject",
          representation(legend = "character"),
          prototype(dp = DisplayPars(size = 1,
@@ -337,6 +355,13 @@ setClass("Legend", contains = "gdObject",
                    color = "black"))
          );
 
+makeLegend <- function(text, fill, cex) {
+  dp <- getClass("Legend")@prototype@dp
+  if (!missing(cex)) setPar(dp, "cex", cex)
+  if (!missing(fill)) setPar(dp, "color", fill)
+  new("Legend", legend = text, dp = dp)
+}
+#######################################
 setClass("GenomeAxis", contains = "gdObject", 
          representation(add53 = "logical",
                         add35 = "logical",
@@ -348,6 +373,12 @@ setClass("GenomeAxis", contains = "gdObject",
                      cex=1, byValue = 1, distFromAxis = 1, labelPos = "alternating"))
          );
 
+makeGenomeAxis <- function(add53 = FALSE, add35 = FALSE, littleTicks = FALSE, dp = NULL){
+ if (is.null(dp))
+   dp <- getClass("GenomeAxis")@prototype@dp
+ new("GenomeAxis", add53 = add53, add35 = add35, dp = dp)
+}
+#######################################
 setClass("Segmentation", contains = "gdObject",
          representation(segments = "list",
                         segmentStart = "list",
@@ -360,11 +391,23 @@ setClassUnion("SegmentationOrNULL", c("Segmentation", "NULL"))
 setClass("Segmentable", representation(segmentation = "SegmentationOrNULL"),
          prototype(segmentation = NULL))
 
+makeSegmentation <- function(start, end, value, dp = NULL) {
+  if (!is.list(value) && !is.list(start) && !is.list(end)) {
+    start <- list(start)
+    end <- list(end)
+    value <- list(value)
+  }
+  if (is.null(dp))
+    dp <- getClass("RectangleOverlay")@prototype@dp
+  new("Segmentation", segments = value, segmentStart = start, segmentEnd = end, dp = dp)
+}
+#########################################
 setClass("GenericArray", contains = c("gdObject", "Segmentable"), 
          representation(intensity = "matrix",
                         probeStart = "numeric",
                         probeEnd = "numeric"),
-         prototype(dp = DisplayPars(color = "darkred",
+         prototype(
+                   dp = DisplayPars(color = "darkred",
                    lty = "solid",
                    pch = 16,
                    pointSize = .2,
@@ -373,6 +416,18 @@ setClass("GenericArray", contains = c("gdObject", "Segmentable"),
                    type = "point"), segmentation = NULL)
          );
 
+makeGenericArray <- function(intensity, probeStart, probeEnd, segmentation, dp = NULL){
+ pt <- getClass("GenericArray")@prototype 
+ if (is.null(dp))
+   dp <- pt@dp
+ if(missing(probeEnd))
+    probeEnd <- pt@probeEnd
+ if(missing(segmentation))
+   segmentation <- pt@segmentation
+ if(missing(probeStart)) stop("Need probeStart argument to know where to plot the data on the genome")
+ new("GenericArray", intensity = intensity, probeStart = probeStart, probeEnd = probeEnd, dp = dp, segmentation = segmentation)
+}
+#########################################
 setClass("ExonArray", contains = "gdObject", 
          representation(intensity = "matrix",
                         probeStart = "numeric",
@@ -390,9 +445,24 @@ setClass("ExonArray", contains = "gdObject",
                    lty = "solid",
                    probeSetLwd = 1,
                    probeSetColor = "grey"
-                   ))
+                   ), displayProbesets = FALSE)
          );
 
+makeExonArray <- function(intensity, probeStart, probeEnd, probeId, nProbes, displayProbesets = FALSE, dp = NULL){
+  pt <- getClass("ExonArray")@prototype 
+  if (is.null(dp))
+    dp <- pt@dp
+  if(missing(probeEnd))
+    probeEnd <- pt@probeEnd
+  if(missing(probeId))
+    probeId <- pt@probeId
+  if(missing(nProbes))
+    nProbes <- pt@nProbes
+ if (is.null(dp))
+   dp <- getClass("ExonArray")@prototype@dp
+ new("ExonArray", intensity = intensity, probeStart = probeStart, probeEnd = probeEnd,probeId = probeId, nProbes = nProbes, displayProbesets = displayProbesets,dp = dp)
+}
+###########################################
 setClass("GeneModel", contains = "gdObject", 
          representation(exonStart = "numeric",
                         exonEnd = "numeric",
@@ -401,7 +471,12 @@ setClass("GeneModel", contains = "gdObject",
                    size = 1))
          );
 
-
+makeGeneModel <- function(start, end, chromosome, dp = NULL){
+ if (is.null(dp))
+   dp <- getClass("GeneModel")@prototype@dp
+ new("GeneModel", exonStart = start, exonEnd = end, dp = dp)
+}
+##########################################
 setClass("BaseTrack", contains = c("gdObject", "Segmentable"), 
          representation(base = "numeric",
                         value = "numeric",
@@ -413,6 +488,20 @@ setClass("BaseTrack", contains = c("gdObject", "Segmentable"),
                    lwd = 1), segmentation = NULL)
          );
 
+makeBaseTrack <- function(base, value, strand, segmentation, dp = NULL){
+ pt <- getClass("BaseTrack")@prototype 
+ if (is.null(dp))
+   dp <- pt@dp
+ if(missing(strand))
+    strand <- pt@strand
+ if(missing(segmentation))
+   segmentation <- pt@segmentation
+ if(missing(base)) stop("Need base argument to know the base positions to plot the data on the genome")
+ if(missing(value)) stop("Need value argument")
+ 
+ new("BaseTrack", base = base, value = value, strand = strand, dp = dp, segmentation = segmentation)
+}
+##############################################
 setClass("MappedRead", contains = "gdObject", 
          representation(start = "numeric",
                         end = "numeric",
@@ -425,20 +514,5 @@ setClass("MappedRead", contains = "gdObject",
          );
 
 
-makeLegend <- function(text, fill, cex) {
-  dp <- getClass("Legend")@prototype@dp
-  if (!missing(cex)) setPar(dp, "cex", cex)
-  if (!missing(fill)) setPar(dp, "color", fill)
-  new("Legend", legend = text, dp = dp)
-}
 
-makeSegmentation <- function(start, end, value, dp = NULL) {
-  if (!is.list(value) && !is.list(start) && !is.list(end)) {
-    start <- list(start)
-    end <- list(end)
-    value <- list(value)
-  }
-  if (is.null(dp))
-    dp <- getClass("RectangleOverlay")@prototype@dp
-  new("Segmentation", segments = value, segmentStart = start, segmentEnd = end, dp = dp)
-}
+

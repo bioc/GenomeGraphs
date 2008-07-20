@@ -31,7 +31,7 @@
 \author{Steffen Durinck and James Bullard}
 \examples{
 
-data("dummyData", package="GenomeGraphs")
+data("exampleData", package="GenomeGraphs")
 
 minbase = min(probestart)
 maxbase = max(probestart)

@@ -86,7 +86,7 @@ add a genomic axis as well to give us the base positions.
 
 <<fig=TRUE>>=
 plusStrand <- new("GeneRegion", chromosome = "17", start = 30450000, end = 30550000, strand = "+", biomart = mart)
-genomeAxis <- new("GenomeAxis", add53 = TRUE)
+genomeAxis <- makeGenomeAxis(add53 = TRUE)
 gdPlot(list(genomeAxis, plusStrand))
 @
 
@@ -96,8 +96,8 @@ of chromosome 17, highlighting the region we are looking at.
 
 <<fig=TRUE>>=
 minStrand <- new("GeneRegion", chromosome = "17", start = 30450000, end = 30550000, strand = "-", biomart = mart)
-ideogram <- new("Ideogram", chromosome = "17")
-genomeAxis <- new("GenomeAxis", add53=TRUE, add35=TRUE)
+ideogram <- makeIdeogram(chromosome = 17)
+genomeAxis <- makeGenomeAxis(add53=TRUE, add35=TRUE)
 gdPlot(list(ideogram, plusStrand, genomeAxis, minStrand), minBase = 30450000, maxBase =  30550000)
 @
 
@@ -113,7 +113,7 @@ argument.  This should be a one column matrix.  Lets load some dummy
 data.
 
 <<fig=TRUE>>=
-data("dummyData", package="GenomeGraphs")
+data("exampleData", package="GenomeGraphs")
 
 minbase <- 180292097 
 maxbase <- 180492096
@@ -126,13 +126,13 @@ genesmin <- new("GeneRegion", start = minbase, end = maxbase,
 seg <- makeSegmentation(segStart, segEnd, segments, 
                         dp = DisplayPars(color = "black", lwd=2,lty = "solid"))
 
-cop <- new("GenericArray", intensity  = cn, probeStart = probestart, 
+cop <- makeGenericArray( intensity  = cn, probeStart = probestart, 
            segmentation =  seg, dp = DisplayPars(size=3, color = "seagreen", type="dot"))
 
-ideog <- new("Ideogram", chromosome = "3")
-expres <- new("GenericArray", intensity = intensity, probeStart = exonProbePos, 
+ideog <- makeIdeogram(chromosome = 3)
+expres <- makeGenericArray(intensity = intensity, probeStart = exonProbePos, 
               dp = DisplayPars(color="darkred", type="point"))
-genomeAxis <- new("GenomeAxis", add53 = TRUE, add35=TRUE)
+genomeAxis <- makeGenomeAxis(add53 = TRUE, add35=TRUE)
 
 gdPlot(list(a=ideog,b=expres,c=cop,d=genesplus,e=genomeAxis,f=genesmin), 
        minBase = minbase, maxBase =maxbase, labelCex = 2)
@@ -146,12 +146,12 @@ relating alternative splicing with known transcript structures.
 <<fig=TRUE>>=
 data("unrData", package="GenomeGraphs")
 
-title <- new("Title", title ="ENSG00000009307", dp = DisplayPars(color = "darkred"))
-exon <- new("ExonArray", intensity = unrData, probeStart = unrPositions[,3], 
+title <- makeTitle(text ="ENSG00000009307", color = "darkred")
+exon <- makeExonArray(intensity = unrData, probeStart = unrPositions[,3], 
             probeEnd=unrPositions[,4], probeId = as.character(unrPositions[,1]), 
             nProbes = unrNProbes, dp = DisplayPars(color = "blue", mapColor = "dodgerblue2"), 
             displayProbesets=FALSE)
-affyModel <- new("GeneModel", exonStart = unrPositions[,3], exonEnd =  unrPositions[,4])
+affyModel <- makeGeneModel(start = unrPositions[,3], end =  unrPositions[,4])
 gene <- new("Gene", id = "ENSG00000009307", biomart = mart)
 transcript <- new("Transcript", id ="ENSG00000009307" , biomart = mart)
 legend <- makeLegend(c("affyModel","gene"), fill = c("darkgreen","orange"))

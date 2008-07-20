@@ -43,7 +43,7 @@ Objects can be created by calls of the form \code{new("GenericArray", ...)}.
 }
 \examples{
 if(interactive()){
-data("dummyData", package="GenomeGraphs")
+data("exampleData", package="GenomeGraphs")
 
 minbase <- 180292097 
 maxbase <- 180492096

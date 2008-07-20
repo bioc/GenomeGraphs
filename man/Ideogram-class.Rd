@@ -25,7 +25,7 @@ No methods defined with class "Ideogram" in the signature.
 }
 \examples{
 if(interactive()){
-data("dummyData", package="GenomeGraphs")
+data("exampleData", package="GenomeGraphs")
 
 minbase <- 180292097 
 maxbase <- 180492096

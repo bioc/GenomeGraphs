@@ -40,7 +40,7 @@
 \author{James Bullard}
 \examples{
 if (interactive()) {
-data("dummyData", package="GenomeGraphs")
+data("exampleData", package="GenomeGraphs")
 
 ga <- new("GenomeAxis")
 grF <- new("GeneRegion", start = 10000, end = 20000, chromosome = "I", strand = "+", biomart = yeastMart)

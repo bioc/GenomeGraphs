@@ -34,7 +34,7 @@
 }
 \examples{
 if (interactive()) {
-data("dummyData", package="GenomeGraphs")
+data("exampleData", package="GenomeGraphs")
 ga <- new("GenomeAxis")
 bt <- new("BaseTrack", base = yeastCons1[,1], value = yeastCons1[,2],
           dp = DisplayPars(color = "darkblue"))
