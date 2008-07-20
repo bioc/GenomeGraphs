@@ -665,7 +665,6 @@ setMethod("drawGD", signature("BaseTrack"), function(gdObject, minBase, maxBase,
         if(any(!is.finite(ylim))) {
             ylim <- c(0,.1)
         }
-        cat("ylim in drawGD:", ylim, "\n")
         pushViewport(dataViewport(xData = xlim, yscale = ylim, extension = 0, clip = TRUE,
                                   layout.pos.col = 1, layout.pos.row = vpPosition))
     }

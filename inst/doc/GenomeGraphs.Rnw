@@ -253,29 +253,57 @@ gdPlot(list(grF, ga, grR, bt), overlays = list(ro, roR))
         \hline
         class & description \\
         \hline
-        \texttt{gdObject} &  The root class of the system, never directly
-        instantiated. \\
-        \texttt{Gene} &  A class representing a Gene. \\
-        \texttt{GeneRegion} & A class defining a region of a chromsome
-        -- generally a set of genetic elements (genes). \\
-        \texttt{Transcript} & A class defining a transcript \\
-        \texttt{TranscriptRegion} &  A class defining a region of a chromsome --
-        generally a set of genetic elements (transcripts).\\
-        \texttt{Ideogram} &  An Ideogram \\
-        \texttt{Title} &  A class to draw a title. \\
-        \texttt{Legend} &  A class to draw a legend.\\
-        \texttt{GenomeAxis} &  A class to draw a axis.\\
-        \texttt{Segmentation} &  A class used to draw horizontal lines in various
-        sets of data. \\
-        \texttt{GenericArray} &  Used to draw data from microarrays. \\
-        \texttt{ExonArray} &  Used to draw data from exon microarrays. \\
-        \texttt{GeneModel} & A class to draw custom gene models (intron-exon structures)  \\
-        \texttt{BaseTrack} &  Used to draw whatever kind of data at a given
-        base. \\
-        \texttt{MappedRead} &  A class to plot sequencing reads that are mapped to the genome\\
-        \texttt{DisplayPars} & A class which manages various plotting parameters. \\
+        \texttt{gdObject} &  the root class of the system, never directly instantiated \\
+        \texttt{Gene} &  class representing a gene \\
+        \texttt{GeneRegion} & class defining a region of a
+        chromsome, generally a set of genetic elements (genes) \\
+        \texttt{Transcript} & class defining a transcript \\
+        \texttt{TranscriptRegion} &  class defining a region of a chromsome, generally a set of genetic elements (transcripts)\\
+        \texttt{Ideogram} &  an ideogram \\
+        \texttt{Title} &  class to draw a title  \\
+        \texttt{Legend} &  class to draw a legend  \\
+        \texttt{GenomeAxis} &  class to draw a axis \\
+        \texttt{Segmentation} &  class to draw horizontal lines in various sets of data \\
+        \texttt{GenericArray} &  class to draw data from microarrays. \\
+        \texttt{ExonArray} &  class to draw data from exon microarrays. \\
+        \texttt{GeneModel} & class to draw custom gene models (intron-exon structures)  \\
+        \texttt{BaseTrack} &  class to draw whatever kind of data at a given base \\
+        \texttt{MappedRead} &  class to plot sequencing reads that are mapped to the genome \\
+        \texttt{DisplayPars} & class managing various plotting parameters \\
+        \texttt{AnnotationTrack} & class used to represent custom annotation \\
+        \texttt{Overlay} & root class for overlays, never directly instantiated \\
+        \texttt{RectangleOverlay} & class to represent rectangular regions of interest \\
+        \texttt{TextOverlay} & class to draw text on plots \\
         \hline
       \end{tabular}
     \end{center}
   \end{table}
+
+<<echo=FALSE, eval=FALSE>>=
+data("seqDataEx", package = "GenomeGraphs")
+str <- seqDataEx$david[,"strand"] == 1
+biomart <- useMart("ensembl", "scerevisiae_gene_ensembl")
+pList <- list("-" = new("GeneRegion", chromosome = "IV", start = 1300000, end = 1310000, 
+                        strand = "-", biomart = biomart, dp = DisplayPars(plotId = TRUE, idRotation = 0, cex = .5)),
+              new("GenomeAxis", dp = DisplayPars(byValue = 1e5, size = 3)),
+              "+" = new("GeneRegion", chromosome = "IV", start = 1300000, end = 1310000, 
+                        strand = "+", biomart = biomart, dp = DisplayPars(plotId = TRUE, idRotation = 0, cex = .5)),
+              "Nagalakshmi" = new("BaseTrack", base = seqDataEx$snyder[, "location"], value = seqDataEx$snyder[, "counts"], 
+                             dp = DisplayPars(lwd = .3, color = "darkblue", ylim = c(0,300))),
+              "David +" = new("GenericArray", probeStart = seqDataEx$david[str, "location"], 
+                            intensity = seqDataEx$david[str, "expr", drop=FALSE], dp = DisplayPars(pointSize = .5)),
+              "David -" = new("GenericArray", probeStart = seqDataEx$david[!str, "location"], 
+                             intensity = seqDataEx$david[!str, "expr", drop=FALSE], 
+                             dp = DisplayPars(color = "darkgreen", pointSize = .5)),
+              "Lee" = new("BaseTrack", base = seqDataEx$nislow[, "location"], 
+                             value = seqDataEx$nislow[, "evalue"], dp = DisplayPars(color="grey", lwd=.25)),
+              "Conservation" = new("BaseTrack", base = seqDataEx$conservation[, "location"], 
+                                   value = seqDataEx$conservation[, "score"], dp = DisplayPars(color="gold4", lwd=.25)))
+
+pdf("~/Desktop/bmc_GenomeGraphs/shortReadEx.pdf")
+gdPlot(pList, minBase = 1301500, maxBase = 1302500, 
+       overlay = makeRectangleOverlay(start = 1302105, end = 1302190, region = c(4,8),  dp = DisplayPars(alpha = .2)))
+dev.off()
+@ 
+
 \end{document}
