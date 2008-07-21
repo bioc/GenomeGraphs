@@ -102,7 +102,7 @@ add a genomic axis as well to give us the base positions.
 > plusStrand <- new("GeneRegion", chromosome = "17", 
 +     start = 30450000, end = 30550000, 
 +     strand = "+", biomart = mart)
-> genomeAxis <- new("GenomeAxis", add53 = TRUE)
+> genomeAxis <- makeGenomeAxis(add53 = TRUE)
 > gdPlot(list(genomeAxis, plusStrand))
 \end{Sinput}
 \end{Schunk}
@@ -117,8 +117,8 @@ of chromosome 17, highlighting the region we are looking at.
 > minStrand <- new("GeneRegion", chromosome = "17", 
 +     start = 30450000, end = 30550000, 
 +     strand = "-", biomart = mart)
-> ideogram <- new("Ideogram", chromosome = "17")
-> genomeAxis <- new("GenomeAxis", add53 = TRUE, 
+> ideogram <- makeIdeogram(chromosome = 17)
+> genomeAxis <- makeGenomeAxis(add53 = TRUE, 
 +     add35 = TRUE)
 > gdPlot(list(ideogram, plusStrand, genomeAxis, 
 +     minStrand), minBase = 30450000, maxBase = 30550000)
@@ -139,7 +139,7 @@ data.
 
 \begin{Schunk}
 \begin{Sinput}
-> data("dummyData", package = "GenomeGraphs")
+> data("exampleData", package = "GenomeGraphs")
 > minbase <- 180292097
 > maxbase <- 180492096
 > genesplus <- new("GeneRegion", start = minbase, 
@@ -151,15 +151,15 @@ data.
 > seg <- makeSegmentation(segStart, segEnd, 
 +     segments, dp = DisplayPars(color = "black", 
 +         lwd = 2, lty = "solid"))
-> cop <- new("GenericArray", intensity = cn, 
+> cop <- makeGenericArray(intensity = cn, 
 +     probeStart = probestart, segmentation = seg, 
 +     dp = DisplayPars(size = 3, color = "seagreen", 
 +         type = "dot"))
-> ideog <- new("Ideogram", chromosome = "3")
-> expres <- new("GenericArray", intensity = intensity, 
+> ideog <- makeIdeogram(chromosome = 3)
+> expres <- makeGenericArray(intensity = intensity, 
 +     probeStart = exonProbePos, dp = DisplayPars(color = "darkred", 
 +         type = "point"))
-> genomeAxis <- new("GenomeAxis", add53 = TRUE, 
+> genomeAxis <- makeGenomeAxis(add53 = TRUE, 
 +     add35 = TRUE)
 > gdPlot(list(a = ideog, b = expres, c = cop, 
 +     d = genesplus, e = genomeAxis, f = genesmin), 
@@ -177,15 +177,15 @@ relating alternative splicing with known transcript structures.
 \begin{Schunk}
 \begin{Sinput}
 > data("unrData", package = "GenomeGraphs")
-> title <- new("Title", title = "ENSG00000009307", 
-+     dp = DisplayPars(color = "darkred"))
-> exon <- new("ExonArray", intensity = unrData, 
+> title <- makeTitle(text = "ENSG00000009307", 
++     color = "darkred")
+> exon <- makeExonArray(intensity = unrData, 
 +     probeStart = unrPositions[, 3], probeEnd = unrPositions[, 
 +         4], probeId = as.character(unrPositions[, 
 +         1]), nProbes = unrNProbes, dp = DisplayPars(color = "blue", 
 +         mapColor = "dodgerblue2"), displayProbesets = FALSE)
-> affyModel <- new("GeneModel", exonStart = unrPositions[, 
-+     3], exonEnd = unrPositions[, 4])
+> affyModel <- makeGeneModel(start = unrPositions[, 
++     3], end = unrPositions[, 4])
 > gene <- new("Gene", id = "ENSG00000009307", 
 +     biomart = mart)
 > transcript <- new("Transcript", id = "ENSG00000009307", 
@@ -331,29 +331,77 @@ case one wants to be a bit more precise.
         \hline
         class & description \\
         \hline
-        \texttt{gdObject} &  The root class of the system, never directly
-        instantiated. \\
-        \texttt{Gene} &  A class representing a Gene. \\
-        \texttt{GeneRegion} & A class defining a region of a chromsome
-        -- generally a set of genetic elements (genes). \\
-        \texttt{Transcript} & A class defining a transcript \\
-        \texttt{TranscriptRegion} &  A class defining a region of a chromsome --
-        generally a set of genetic elements (transcripts).\\
-        \texttt{Ideogram} &  An Ideogram \\
-        \texttt{Title} &  A class to draw a title. \\
-        \texttt{Legend} &  A class to draw a legend.\\
-        \texttt{GenomeAxis} &  A class to draw a axis.\\
-        \texttt{Segmentation} &  A class used to draw horizontal lines in various
-        sets of data. \\
-        \texttt{GenericArray} &  Used to draw data from microarrays. \\
-        \texttt{ExonArray} &  Used to draw data from exon microarrays. \\
-        \texttt{GeneModel} & A class to draw custom gene models (intron-exon structures)  \\
-        \texttt{BaseTrack} &  Used to draw whatever kind of data at a given
-        base. \\
-        \texttt{MappedRead} &  A class to plot sequencing reads that are mapped to the genome\\
-        \texttt{DisplayPars} & A class which manages various plotting parameters. \\
+        \texttt{gdObject} &  the root class of the system, never directly instantiated \\
+        \texttt{Gene} &  class representing a gene \\
+        \texttt{GeneRegion} & class defining a region of a
+        chromsome, generally a set of genetic elements (genes) \\
+        \texttt{Transcript} & class defining a transcript \\
+        \texttt{TranscriptRegion} &  class defining a region of a chromsome, generally a set of genetic elements (transcripts)\\
+        \texttt{Ideogram} &  an ideogram \\
+        \texttt{Title} &  class to draw a title  \\
+        \texttt{Legend} &  class to draw a legend  \\
+        \texttt{GenomeAxis} &  class to draw a axis \\
+        \texttt{Segmentation} &  class to draw horizontal lines in various sets of data \\
+        \texttt{GenericArray} &  class to draw data from microarrays. \\
+        \texttt{ExonArray} &  class to draw data from exon microarrays. \\
+        \texttt{GeneModel} & class to draw custom gene models (intron-exon structures)  \\
+        \texttt{BaseTrack} &  class to draw whatever kind of data at a given base \\
+        \texttt{MappedRead} &  class to plot sequencing reads that are mapped to the genome \\
+        \texttt{DisplayPars} & class managing various plotting parameters \\
+        \texttt{AnnotationTrack} & class used to represent custom annotation \\
+        \texttt{Overlay} & root class for overlays, never directly instantiated \\
+        \texttt{RectangleOverlay} & class to represent rectangular regions of interest \\
+        \texttt{TextOverlay} & class to draw text on plots \\
         \hline
       \end{tabular}
     \end{center}
   \end{table}
 
+\begin{Schunk}
+\begin{Sinput}
+> data("seqDataEx", package = "GenomeGraphs")
+> str = seqDataEx$david[, "strand"] == 1
+> biomart = useMart("ensembl", "scerevisiae_gene_ensembl")
+\end{Sinput}
+\begin{Soutput}
+Checking attributes and filters ... ok
+\end{Soutput}
+\begin{Sinput}
+> pList = list("-" = new("GeneRegion", chromosome = "IV", 
++     start = 1300000, end = 1310000, strand = "-", 
++     biomart = biomart, dp = DisplayPars(plotId = TRUE, 
++         idRotation = 0, cex = 0.5)), new("GenomeAxis", 
++     dp = DisplayPars(byValue = 1e+05, 
++         size = 3)), "+" = new("GeneRegion", 
++     chromosome = "IV", start = 1300000, 
++     end = 1310000, strand = "+", biomart = biomart, 
++     dp = DisplayPars(plotId = TRUE, idRotation = 0, 
++         cex = 0.5)), Nagalakshmi = new("BaseTrack", 
++     base = seqDataEx$snyder[, "location"], 
++     value = seqDataEx$snyder[, "counts"], 
++     dp = DisplayPars(lwd = 0.3, color = "darkblue", 
++         ylim = c(0, 300))), "David +" = new("GenericArray", 
++     probeStart = seqDataEx$david[str, 
++         "location"], intensity = seqDataEx$david[str, 
++         "expr", drop = FALSE], dp = DisplayPars(pointSize = 0.5)), 
++     "David -" = new("GenericArray", probeStart = seqDataEx$david[!str, 
++         "location"], intensity = seqDataEx$david[!str, 
++         "expr", drop = FALSE], dp = DisplayPars(color = "darkgreen", 
++         pointSize = 0.5)), Lee = new("BaseTrack", 
++         base = seqDataEx$nislow[, "location"], 
++         value = seqDataEx$nislow[, "evalue"], 
++         dp = DisplayPars(color = "grey", 
++             lwd = 0.25)), Conservation = new("BaseTrack", 
++         base = seqDataEx$conservation[, 
++             "location"], value = seqDataEx$conservation[, 
++             "score"], dp = DisplayPars(color = "gold4", 
++             lwd = 0.25)))
+> gdPlot(pList, minBase = 1301500, maxBase = 1302500, 
++     overlay = makeRectangleOverlay(start = 1302105, 
++         end = 1302190, region = c(4, 8), 
++         dp = DisplayPars(alpha = 0.2)))
+\end{Sinput}
+\end{Schunk}
+\includegraphics{GenomeGraphs-016}
+
+\end{document}
