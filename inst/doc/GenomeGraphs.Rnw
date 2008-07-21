@@ -63,7 +63,7 @@ mart <- useMart("ensembl", dataset="hsapiens_gene_ensembl")
 Next we can retrieve the gene structure of the gene of interest.
 
 <<fig=TRUE>>=
-gene <- new("Gene", id = "ENSG00000095203", type="ensembl_gene_id", biomart = mart)
+gene <- makeGene( id = "ENSG00000095203", type="ensembl_gene_id", biomart = mart)
 gdPlot(gene) 
 @
 
@@ -85,7 +85,7 @@ below we will retrieve the genes on the forward (+) strand only and
 add a genomic axis as well to give us the base positions.
 
 <<fig=TRUE>>=
-plusStrand <- new("GeneRegion", chromosome = "17", start = 30450000, end = 30550000, strand = "+", biomart = mart)
+plusStrand <- makeGeneRegion(chromosome = 17, start = 30450000, end = 30550000, strand = "+", biomart = mart)
 genomeAxis <- makeGenomeAxis(add53 = TRUE)
 gdPlot(list(genomeAxis, plusStrand))
 @
@@ -95,7 +95,7 @@ of chromosome 17, highlighting the region we are looking at.
 
 
 <<fig=TRUE>>=
-minStrand <- new("GeneRegion", chromosome = "17", start = 30450000, end = 30550000, strand = "-", biomart = mart)
+minStrand <- makeGeneRegion( chromosome = 17, start = 30450000, end = 30550000, strand = "-", biomart = mart)
 ideogram <- makeIdeogram(chromosome = 17)
 genomeAxis <- makeGenomeAxis(add53=TRUE, add35=TRUE)
 gdPlot(list(ideogram, plusStrand, genomeAxis, minStrand), minBase = 30450000, maxBase =  30550000)
@@ -118,9 +118,9 @@ data("exampleData", package="GenomeGraphs")
 minbase <- 180292097 
 maxbase <- 180492096
 
-genesplus <- new("GeneRegion", start = minbase, end = maxbase, 
+genesplus <- makeGeneRegion( start = minbase, end = maxbase, 
                  strand = "+", chromosome = "3", biomart=mart)
-genesmin <- new("GeneRegion", start = minbase, end = maxbase, 
+genesmin <- makeGeneRegion( start = minbase, end = maxbase, 
                 strand = "-", chromosome = "3", biomart=mart)
 
 seg <- makeSegmentation(segStart, segEnd, segments, 
@@ -152,8 +152,8 @@ exon <- makeExonArray(intensity = unrData, probeStart = unrPositions[,3],
             nProbes = unrNProbes, dp = DisplayPars(color = "blue", mapColor = "dodgerblue2"), 
             displayProbesets=FALSE)
 affyModel <- makeGeneModel(start = unrPositions[,3], end =  unrPositions[,4])
-gene <- new("Gene", id = "ENSG00000009307", biomart = mart)
-transcript <- new("Transcript", id ="ENSG00000009307" , biomart = mart)
+gene <- makeGene(id = "ENSG00000009307", biomart = mart)
+transcript <- makeTranscript( id ="ENSG00000009307" , biomart = mart)
 legend <- makeLegend(c("affyModel","gene"), fill = c("darkgreen","orange"))
 rOverlay = makeRectangleOverlay(start = 115085100, end = 115086500, region = c(3,5),  dp = DisplayPars(alpha = .2, fill = "olivedrab1"))
 gdPlot(list(title, exon, affyModel, gene, transcript, legend), minBase = 115061061, maxBase=115102147, overlay = rOverlay)

@@ -2,7 +2,7 @@ importFrom("methods", "initialize")
 importClassesFrom("biomaRt", "Mart")
 
 export(gdPlot, DisplayPars, geneRegionBiomart, geneBiomart,
-       makeLegend, makeExonArray, makeGeneModel, makeBaseTrack, makeRectangleOverlay, makeTextOverlay, makeSegmentation, makeTitle, makeGenericArray, makeIdeogram, makeGenomeAxis)
+       makeLegend,makeGene, makeGeneRegion, makeTranscript ,makeExonArray, makeGeneModel, makeBaseTrack, makeRectangleOverlay, makeTextOverlay, makeSegmentation, makeTitle, makeGenericArray, makeIdeogram, makeGenomeAxis)
 
 exportClasses(DisplayPars, GenericArray, MappedRead, BaseTrack, Legend,
               Title, Gene, Transcript, GeneModel,GenomeAxis, ExonArray,

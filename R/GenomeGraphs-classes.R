@@ -184,7 +184,7 @@ geneRegionBiomart <- function(chr, start, end, strand, biomart, dp = NULL, chrFu
         regions = data.frame(start = ens[,4], end = ens[,5], feature = ens[,8], group = ens[,1], ID = ens[,3]),
         dp = dp)
 }
-
+###############################################
 setClass("Gene", contains = "gdObject",
          representation(id = "character",
                         type = "character",
@@ -211,6 +211,16 @@ setMethod("initialize", "Gene", function(.Object, ...){
     .Object
 })
 
+makeGene <- function(id, type, biomart, dp = NULL){
+ if(missing(id)) stop("Need to specify a gene identifier for creating a Gene")
+  pt <- getClass("Gene")@prototype
+ if (is.null(dp))
+   dp <- pt@dp
+ if(missing(type))
+   type=pt@type
+ new("Gene", id = id, type = type, biomart = biomart, dp = dp)
+}
+###############################################
 ## Why can't I just use the setClassUnion Mechanism?
 setClassUnion("MartOrNULL", c("Mart", "NULL"))
 
@@ -277,6 +287,17 @@ setMethod("initialize", "GeneRegion", function(.Object,...){
     .Object
 })
 
+makeGeneRegion <- function(start, end, chromosome, strand, biomart, dp = NULL){
+ if(missing(start)) stop("Need to specify a start for creating a GeneRegion")
+  pt <- getClass("GeneRegion")@prototype
+ if (is.null(dp))
+   dp <- pt@dp
+ if(is.numeric(chromosome))
+   chromosome = as.character(chromosome)
+ new("GeneRegion", start = start, end = end, chromosome = chromosome, strand = strand ,biomart = biomart, dp = dp)
+}
+
+###########################################
 setClass("Transcript", contains = "gdObject", 
          representation(id = "character",
                         type = "character",
@@ -310,6 +331,16 @@ setMethod("initialize", "Transcript", function(.Object,...){
     .Object
 })
 
+makeTranscript <- function(id, type, biomart, dp = NULL){
+ if(missing(id)) stop("Need to specify a gene identifier for creating a Transcript")
+  pt <- getClass("Transcript")@prototype
+ if (is.null(dp))
+   dp <- pt@dp
+ if(missing(type))
+   type=pt@type
+ new("Transcript", id = id, type = type, biomart = biomart, dp = dp)
+}
+########################################
 setClass("TranscriptRegion", contains = "gdObject", 
          representation(start = "numeric",
                         end = "numeric",
