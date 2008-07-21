@@ -155,9 +155,8 @@ affyModel <- makeGeneModel(start = unrPositions[,3], end =  unrPositions[,4])
 gene <- new("Gene", id = "ENSG00000009307", biomart = mart)
 transcript <- new("Transcript", id ="ENSG00000009307" , biomart = mart)
 legend <- makeLegend(c("affyModel","gene"), fill = c("darkgreen","orange"))
-
-gdPlot(list(title, exon, affyModel, gene, transcript, legend), 
-       minBase = min(exon@probeStart), maxBase=max(exon@probeEnd))
+rOverlay = makeRectangleOverlay(start = 115085100, end = 115086500, region = c(3,5),  dp = DisplayPars(alpha = .2, fill = "olivedrab1"))
+gdPlot(list(title, exon, affyModel, gene, transcript, legend), minBase = 115061061, maxBase=115102147, overlay = rOverlay)
 @
 
 \subsection{Plotting Conservation Data}
@@ -177,11 +176,11 @@ grP <- new("GeneRegion", start = minB, end = maxB,
            strand = "+", chromosome = chrRoman, biomart = yeastMart)
 grM <- new("GeneRegion", start = minB, end = maxB, 
            strand = "-", chromosome = chrRoman, biomart = yeastMart)
-gaxis <- new("GenomeAxis", add53 = TRUE, add35 = TRUE)
+gaxis <- makeGenomeAxis( add53 = TRUE, add35 = TRUE)
   
 conserv <- yeastCons1[yeastCons1[,1] > minB & yeastCons1[,1] < maxB, ]
 
-consTrack <- new("BaseTrack", base = conserv[, 1], value = conserv[,2],
+consTrack <- makeBaseTrack( base = conserv[, 1], value = conserv[,2],
                  dp = DisplayPars(lwd=.2, ylim = c(0, 1.25), color = "darkblue"))
 
 gdPlot(list(grP, gaxis, grM, "conservation" = consTrack)) 
@@ -198,7 +197,7 @@ plotGeneRegion <- function(chr = 1, minB = 9000, maxB = 13000, rot = 0, col = "g
              strand = "+", chromosome = chrRoman, biomart = yeastMart, 
              dp = DisplayPars(plotId = TRUE, idRotation = rot, 
              idColor = col))
-  gaxis <- new("GenomeAxis", add53 = TRUE, add35 = TRUE, littleTicks = FALSE)
+  gaxis <- makeGenomeAxis( add53 = TRUE, add35 = TRUE, littleTicks = FALSE)
   gdPlot(list(grP, gaxis), minBase = minB, maxBase = maxB)
 }
 plotGeneRegion(col = "yellow", rot=90)
