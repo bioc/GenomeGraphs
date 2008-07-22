@@ -69,7 +69,7 @@ Next we can retrieve the gene structure of the gene of interest.
 
 \begin{Schunk}
 \begin{Sinput}
-> gene <- new("Gene", id = "ENSG00000095203", 
+> gene <- makeGene(id = "ENSG00000095203", 
 +     type = "ensembl_gene_id", biomart = mart)
 > gdPlot(gene)
 \end{Sinput}
@@ -82,7 +82,7 @@ To add alternative transcripts you first have to create a \Robject{Transcript} o
 Note that the order of the objects in the list determines the order in the plot.
 \begin{Schunk}
 \begin{Sinput}
-> transcript <- new("Transcript", id = "ENSG00000095203", 
+> transcript <- makeTranscript(id = "ENSG00000095203", 
 +     type = "ensembl_gene_id", biomart = mart)
 > gdPlot(list(gene, transcript))
 \end{Sinput}
@@ -99,7 +99,7 @@ add a genomic axis as well to give us the base positions.
 
 \begin{Schunk}
 \begin{Sinput}
-> plusStrand <- new("GeneRegion", chromosome = "17", 
+> plusStrand <- makeGeneRegion(chromosome = 17, 
 +     start = 30450000, end = 30550000, 
 +     strand = "+", biomart = mart)
 > genomeAxis <- makeGenomeAxis(add53 = TRUE)
@@ -111,10 +111,9 @@ add a genomic axis as well to give us the base positions.
 Let's now add the genes on the negative strand as well and an ideogram
 of chromosome 17, highlighting the region we are looking at.
 
-
 \begin{Schunk}
 \begin{Sinput}
-> minStrand <- new("GeneRegion", chromosome = "17", 
+> minStrand <- makeGeneRegion(chromosome = 17, 
 +     start = 30450000, end = 30550000, 
 +     strand = "-", biomart = mart)
 > ideogram <- makeIdeogram(chromosome = 17)
@@ -142,10 +141,10 @@ data.
 > data("exampleData", package = "GenomeGraphs")
 > minbase <- 180292097
 > maxbase <- 180492096
-> genesplus <- new("GeneRegion", start = minbase, 
+> genesplus <- makeGeneRegion(start = minbase, 
 +     end = maxbase, strand = "+", chromosome = "3", 
 +     biomart = mart)
-> genesmin <- new("GeneRegion", start = minbase, 
+> genesmin <- makeGeneRegion(start = minbase, 
 +     end = maxbase, strand = "-", chromosome = "3", 
 +     biomart = mart)
 > seg <- makeSegmentation(segStart, segEnd, 
@@ -184,17 +183,23 @@ relating alternative splicing with known transcript structures.
 +         4], probeId = as.character(unrPositions[, 
 +         1]), nProbes = unrNProbes, dp = DisplayPars(color = "blue", 
 +         mapColor = "dodgerblue2"), displayProbesets = FALSE)
-> affyModel <- makeGeneModel(start = unrPositions[, 
+> affyModel.model <- makeGeneModel(start = unrPositions[, 
 +     3], end = unrPositions[, 4])
-> gene <- new("Gene", id = "ENSG00000009307", 
+> affyModel <- makeAnnotationTrack(start = unrPositions[, 
++     3], end = unrPositions[, 4], feature = "gene_model", 
++     group = "ENSG00000009307", dp = DisplayPars(gene_model = "darkblue"))
+> gene <- makeGene(id = "ENSG00000009307", 
 +     biomart = mart)
-> transcript <- new("Transcript", id = "ENSG00000009307", 
+> transcript <- makeTranscript(id = "ENSG00000009307", 
 +     biomart = mart)
 > legend <- makeLegend(c("affyModel", "gene"), 
 +     fill = c("darkgreen", "orange"))
+> rOverlay <- makeRectangleOverlay(start = 115085100, 
++     end = 115086500, region = c(3, 5), 
++     dp = DisplayPars(alpha = 0.2, fill = "olivedrab1"))
 > gdPlot(list(title, exon, affyModel, gene, 
-+     transcript, legend), minBase = min(exon@probeStart), 
-+     maxBase = max(exon@probeEnd))
++     transcript, legend), minBase = 115061061, 
++     maxBase = 115102147, overlay = rOverlay)
 \end{Sinput}
 \end{Schunk}
 \includegraphics{GenomeGraphs-009}
@@ -215,17 +220,17 @@ Checking attributes and filters ... ok
 > minB <- 10000
 > maxB <- 20000
 > chrRoman <- as.character(as.roman(1))
-> grP <- new("GeneRegion", start = minB, 
-+     end = maxB, strand = "+", chromosome = chrRoman, 
+> grP <- makeGeneRegion(start = minB, end = maxB, 
++     strand = "+", chromosome = chrRoman, 
 +     biomart = yeastMart)
-> grM <- new("GeneRegion", start = minB, 
-+     end = maxB, strand = "-", chromosome = chrRoman, 
+> grM <- makeGeneRegion(start = minB, end = maxB, 
++     strand = "-", chromosome = chrRoman, 
 +     biomart = yeastMart)
-> gaxis <- new("GenomeAxis", add53 = TRUE, 
+> gaxis <- makeGenomeAxis(add53 = TRUE, 
 +     add35 = TRUE)
 > conserv <- yeastCons1[yeastCons1[, 1] > 
 +     minB & yeastCons1[, 1] < maxB, ]
-> consTrack <- new("BaseTrack", base = conserv[, 
+> consTrack <- makeBaseTrack(base = conserv[, 
 +     1], value = conserv[, 2], dp = DisplayPars(lwd = 0.2, 
 +     ylim = c(0, 1.25), color = "darkblue"))
 > gdPlot(list(grP, gaxis, grM, conservation = consTrack))
@@ -242,11 +247,11 @@ In addition to plotting the genes we can enable the plotting of names of genes.
 > plotGeneRegion <- function(chr = 1, minB = 9000, 
 +     maxB = 13000, rot = 0, col = "green") {
 +     chrRoman <- as.character(as.roman(1:17)[chr])
-+     grP <- new("GeneRegion", start = minB, 
++     grP <- makeGeneRegion(start = minB, 
 +         end = maxB, strand = "+", chromosome = chrRoman, 
 +         biomart = yeastMart, dp = DisplayPars(plotId = TRUE, 
 +             idRotation = rot, idColor = col))
-+     gaxis <- new("GenomeAxis", add53 = TRUE, 
++     gaxis <- makeGenomeAxis(add53 = TRUE, 
 +         add35 = TRUE, littleTicks = FALSE)
 +     gdPlot(list(grP, gaxis), minBase = minB, 
 +         maxBase = maxB)
@@ -261,9 +266,9 @@ plot the object without the list, or without the \emph{minBase}, \emph{maxBase}
 arguments. 
 \begin{Schunk}
 \begin{Sinput}
-> gdPlot(new("GeneRegion", start = 9000, 
-+     end = 15000, biomart = yeastMart, 
-+     strand = "-", chromosome = "I", dp = DisplayPars(plotId = TRUE)))
+> gdPlot(makeGeneRegion(start = 9000, end = 15000, 
++     biomart = yeastMart, strand = "-", 
++     chromosome = "I", dp = DisplayPars(plotId = TRUE)))
 \end{Sinput}
 \end{Schunk}
 \includegraphics{GenomeGraphs-012}
@@ -274,14 +279,12 @@ plot. Currently, we can draw boxes and write text on the plot.
 
 \begin{Schunk}
 \begin{Sinput}
-> ga <- new("GenomeAxis")
-> grF <- new("GeneRegion", start = 10000, 
-+     end = 20000, chromosome = "I", strand = "+", 
-+     biomart = yeastMart)
-> grR <- new("GeneRegion", start = 10000, 
-+     end = 20000, chromosome = "I", strand = "-", 
-+     biomart = yeastMart)
-> bt <- new("BaseTrack", base = yeastCons1[, 
+> ga <- makeGenomeAxis()
+> grF <- makeGeneRegion(start = 10000, end = 20000, 
++     chromosome = "I", strand = "+", biomart = yeastMart)
+> grR <- makeGeneRegion(start = 10000, end = 20000, 
++     chromosome = "I", strand = "-", biomart = yeastMart)
+> bt <- makeBaseTrack(base = yeastCons1[, 
 +     1], value = yeastCons1[, 2])
 > hr1 <- makeRectangleOverlay(start = 11000, 
 +     end = 13000)
@@ -367,35 +370,32 @@ case one wants to be a bit more precise.
 Checking attributes and filters ... ok
 \end{Soutput}
 \begin{Sinput}
-> pList = list("-" = new("GeneRegion", chromosome = "IV", 
+> pList = list("-" = makeGeneRegion(chromosome = "IV", 
 +     start = 1300000, end = 1310000, strand = "-", 
 +     biomart = biomart, dp = DisplayPars(plotId = TRUE, 
-+         idRotation = 0, cex = 0.5)), new("GenomeAxis", 
-+     dp = DisplayPars(byValue = 1e+05, 
-+         size = 3)), "+" = new("GeneRegion", 
-+     chromosome = "IV", start = 1300000, 
-+     end = 1310000, strand = "+", biomart = biomart, 
-+     dp = DisplayPars(plotId = TRUE, idRotation = 0, 
-+         cex = 0.5)), Nagalakshmi = new("BaseTrack", 
-+     base = seqDataEx$snyder[, "location"], 
-+     value = seqDataEx$snyder[, "counts"], 
-+     dp = DisplayPars(lwd = 0.3, color = "darkblue", 
-+         ylim = c(0, 300))), "David +" = new("GenericArray", 
-+     probeStart = seqDataEx$david[str, 
++         idRotation = 0, cex = 0.5)), makeGenomeAxis(dp = DisplayPars(size = 3)), 
++     "+" = makeGeneRegion(chromosome = "IV", 
++         start = 1300000, end = 1310000, 
++         strand = "+", biomart = biomart, 
++         dp = DisplayPars(plotId = TRUE, 
++             idRotation = 0, cex = 0.5)), 
++     Nagalakshmi = makeBaseTrack(base = seqDataEx$snyder[, 
++         "location"], value = seqDataEx$snyder[, 
++         "counts"], dp = DisplayPars(lwd = 0.3, 
++         color = "darkblue", ylim = c(0, 
++             300))), "David +" = makeGenericArray(probeStart = seqDataEx$david[str, 
 +         "location"], intensity = seqDataEx$david[str, 
 +         "expr", drop = FALSE], dp = DisplayPars(pointSize = 0.5)), 
-+     "David -" = new("GenericArray", probeStart = seqDataEx$david[!str, 
++     "David -" = makeGenericArray(probeStart = seqDataEx$david[!str, 
 +         "location"], intensity = seqDataEx$david[!str, 
 +         "expr", drop = FALSE], dp = DisplayPars(color = "darkgreen", 
-+         pointSize = 0.5)), Lee = new("BaseTrack", 
-+         base = seqDataEx$nislow[, "location"], 
-+         value = seqDataEx$nislow[, "evalue"], 
-+         dp = DisplayPars(color = "grey", 
-+             lwd = 0.25)), Conservation = new("BaseTrack", 
-+         base = seqDataEx$conservation[, 
-+             "location"], value = seqDataEx$conservation[, 
-+             "score"], dp = DisplayPars(color = "gold4", 
-+             lwd = 0.25)))
++         pointSize = 0.5)), Lee = makeBaseTrack(base = seqDataEx$nislow[, 
++         "location"], value = seqDataEx$nislow[, 
++         "evalue"], dp = DisplayPars(color = "grey", 
++         lwd = 0.25)), Conservation = makeBaseTrack(base = seqDataEx$conservation[, 
++         "location"], value = seqDataEx$conservation[, 
++         "score"], dp = DisplayPars(color = "gold4", 
++         lwd = 0.25)))
 > gdPlot(pList, minBase = 1301500, maxBase = 1302500, 
 +     overlay = makeRectangleOverlay(start = 1302105, 
 +         end = 1302190, region = c(4, 8), 

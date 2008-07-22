@@ -135,6 +135,36 @@ setMethod("initialize", "AnnotationTrack", function(.Object, ...) {
     return(.Object)
 })
 
+makeAnnotationTrack <- function(regions = NULL, chr = NULL, strand = NULL, start = NULL,
+                                end = NULL, feature = NULL, group = NULL, ID = NULL,
+                                dp = NULL) {
+    pt <- getClass("AnnotationTrack")@prototype
+    if (is.null(dp)) dp <- pt@dp
+
+    if (is.null(regions)) {
+        if (is.null(start) || is.null(end))
+            stop("Must specify either regions, or start and end.")
+        if (length(start) != length(end))
+            stop("Start and end must be vectors of the same length")
+        
+        if (is.null(feature))
+            feature <- rep("unknown", length(start))
+        if (is.null(group))
+            group <- 1:length(start)
+        if (is.null(ID))
+            ID <- 1:length(start)
+            
+        regions <- data.frame(start = start, end = end, feature = feature,
+                              group = group, ID = ID)
+    }
+    if (is.null(chr))
+        chr <- 0
+    if (is.null(strand))
+        strand <- 0
+
+    return(new("AnnotationTrack", chr = chr, strand = strand, regions = regions, dp = dp))
+}
+
 geneBiomart <- function(id, biomart, type = "ensembl_gene_id", dp = NULL) {
     ens <- getBM(c("structure_gene_stable_id", "structure_transcript_stable_id", "structure_exon_stable_id",
                    "structure_exon_chrom_start", "structure_exon_chrom_end", "structure_exon_rank",
@@ -288,13 +318,13 @@ setMethod("initialize", "GeneRegion", function(.Object,...){
 })
 
 makeGeneRegion <- function(start, end, chromosome, strand, biomart, dp = NULL){
- if(missing(start)) stop("Need to specify a start for creating a GeneRegion")
-  pt <- getClass("GeneRegion")@prototype
- if (is.null(dp))
-   dp <- pt@dp
- if(is.numeric(chromosome))
-   chromosome = as.character(chromosome)
- new("GeneRegion", start = start, end = end, chromosome = chromosome, strand = strand ,biomart = biomart, dp = dp)
+    if(missing(start)) stop("Need to specify a start for creating a GeneRegion")
+    pt <- getClass("GeneRegion")@prototype
+    if (is.null(dp))
+        dp <- pt@dp
+    if(is.numeric(chromosome))
+        chromosome = as.character(chromosome)
+    new("GeneRegion", start = start, end = end, chromosome = chromosome, strand = strand ,biomart = biomart, dp = dp)
 }
 
 ###########################################
@@ -491,7 +521,8 @@ makeExonArray <- function(intensity, probeStart, probeEnd, probeId, nProbes, dis
     nProbes <- pt@nProbes
  if (is.null(dp))
    dp <- getClass("ExonArray")@prototype@dp
- new("ExonArray", intensity = intensity, probeStart = probeStart, probeEnd = probeEnd,probeId = probeId, nProbes = nProbes, displayProbesets = displayProbesets,dp = dp)
+ new("ExonArray", intensity = intensity, probeStart = probeStart, probeEnd = probeEnd,probeId = probeId,
+     nProbes = nProbes, displayProbesets = displayProbesets,dp = dp)
 }
 ###########################################
 setClass("GeneModel", contains = "gdObject", 
