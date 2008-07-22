@@ -20,7 +20,7 @@ makeIdeogram(chromosome, dp = NULL)
 Object of class Ideogram
 }
 \references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
+\author{Jim Bullard and Steffen Durinck}
 \seealso{ \code{\link{gdPlot}}}
 \examples{
 ##---- Should be DIRECTLY executable !! ----

@@ -28,7 +28,7 @@ Objects can be created by calls of the form \code{new("Gene", ...)}.
 	 }
 }
 \references{http://www.stat.berkeley.edu/~steffen/}
-\author{Steffen Durinck}
+\author{Jim Bullard and Steffen Durinck}
 
 \seealso{
 objects to See Also as \code{\link{gdPlot}}

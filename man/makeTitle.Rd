@@ -19,7 +19,7 @@ makeTitle(text, cex, color, size)
 Object of class Title
 }
 \references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
+\author{Steffen Durinck and Jim Bullard}
 \seealso{\code{\link{gdPlot}}}
 \examples{
 ##---- Should be DIRECTLY executable !! ----

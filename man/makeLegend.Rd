@@ -18,7 +18,7 @@ makeLegend(text, fill, cex)
  Object of class Legend 
 }
 \references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
+\author{Jim Bullard and Steffen Durinck}
 \seealso{ See Also as \code{\link{gdPlot}}}
 \examples{
 ##---- Should be DIRECTLY executable !! ----

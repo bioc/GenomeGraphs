@@ -22,7 +22,7 @@ makeExonArray(intensity, probeStart, probeEnd, probeId, nProbes, displayProbeset
  Object of ExonArray class
 }
 \references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
+\author{Steffen Durinck and Jim Bullard}
 \seealso{\code{\link{gdPlot}}}
 \examples{
 ##---- Should be DIRECTLY executable !! ----

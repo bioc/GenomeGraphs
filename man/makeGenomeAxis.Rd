@@ -19,7 +19,7 @@ makeGenomeAxis(add53 = FALSE, add35 = FALSE, littleTicks = FALSE, dp = NULL)
 Object of class GenomeAxis
 }
 \references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
+\author{Jim Bullard and Steffen Durinck}
 \seealso{\code{\link{DisplayPars}},\code{\link{gdPlot}} }
 \examples{
 ##---- Should be DIRECTLY executable !! ----

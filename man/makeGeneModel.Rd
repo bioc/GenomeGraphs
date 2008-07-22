@@ -19,7 +19,7 @@ makeGeneModel(start, end, chromosome, dp = NULL)
 Object of class GeneModel
 }
 \references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
+\author{Steffen Durinck and Jim Bullard}
 \seealso{\code{\link{DisplayPars}}}
 \examples{
 ##---- Should be DIRECTLY executable !! ----

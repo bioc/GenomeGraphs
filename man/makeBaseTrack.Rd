@@ -20,7 +20,7 @@ makeBaseTrack(base, value, strand, segmentation, dp = NULL)
 Object of class BaseTrack
 }
 \references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
+\author{Jim Bullard and Steffen Durinck}
 \seealso{\code{\link{DisplayPars}}, \code{\link{gdPlot}} }
 \examples{
 ##---- Should be DIRECTLY executable !! ----

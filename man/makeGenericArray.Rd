@@ -20,7 +20,7 @@ makeGenericArray(intensity, probeStart, probeEnd, segmentation, dp = NULL)
 Object of class GenericArray
 }
 \references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
+\author{Jim Bullard and Steffen Durinck}
 \note{ ~~further notes~~ 
 
  ~Make other sections like Warning with \section{Warning }{....} ~
