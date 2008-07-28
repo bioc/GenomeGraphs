@@ -4,6 +4,7 @@
 \alias{getSegmentEnd,Segmentation-method}
 \alias{getSegmentStart,Segmentation-method}
 \alias{getSegments,Segmentation-method}
+\alias{drawGD,Segmentation-method}
 
 \title{Class "Segmentation" is used to specify segmentations to any
   class that extends Segmentable (GenericArray, BaseTrack)}

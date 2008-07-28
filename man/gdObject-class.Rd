@@ -11,6 +11,8 @@
 \alias{initialize,gdObject-method}
 \alias{getPar,gdObject-method}
 \alias{setPar,gdObject-method}
+\alias{showDisplayOptions,gdObject-method}
+\alias{showDisplayOptions,character-method}
 
 \title{Class "gdObject" is the parent class of all of the objects in the
 system.}
@@ -39,6 +41,8 @@ system.}
     \item{getSize}{\code{signature(obj = "gdObject")}: ... }
     \item{initialize}{\code{signature(.Object = "gdObject")}: ... }
     \item{setPar}{\code{signature(obj = "gdObject")}: ... }
+    \item{showDisplayOptions}{\code{signature(obj = "gdObject")}: ... }
+    \item{showDisplayOptions}{\code{signature(obj = "character")}: ... }
   }
 }
 \author{James Bullard}

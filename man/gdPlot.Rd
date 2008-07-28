@@ -6,7 +6,8 @@
   collection of objects are given as a list and these will then be plotten
   in the order given.
 }
-\usage{gdPlot(gdObjects, minBase = NA, maxBase = NA, highlightRegions = NULL, labelRot = 0)
+\usage{gdPlot(gdObjects, minBase = NA, maxBase = NA, overlays = NULL,
+              labelColor = "black", labelCex = 1, labelRot = 90)
 }
 \arguments{
   \item{gdObjects}{ This is either a list of \code{gdObjects} which will
@@ -20,17 +21,17 @@
     plotted,if ommitted a minimum is determined from the objects in
     \code{gdObjects} if possible.
   }
-  \item{highlightRegions}{\code{highlightRegions} defines a set of
-    regions to overlay as rectangles on the plot. This argument is
-    either a list or a single HighlightRegion object. 
+  \item{overlays}{\code{overlays} defines a set of
+    regions to overlay on the plot. This argument is
+    either a list or a single Overlay object. 
   }
-  \item{labelRot}{Rotate the track labels \code{labelRot} degrees. 
-  }
+  \item{labelColor}{Draw the labels with the given colors.}
+  \item{labelCex}{Character expansion factor.}
+  \item{labelRot}{Rotate the track labels \code{labelRot} degrees.} 
 }
 \references{http://www.stat.berkeley.edu/~steffen/}
 \author{Steffen Durinck and James Bullard}
 \examples{
-
 data("exampleData", package="GenomeGraphs")
 
 minbase = min(probestart)
