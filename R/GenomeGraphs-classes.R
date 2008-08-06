@@ -107,8 +107,8 @@ setClass("Gene", contains = "gdObject",
 
 setMethod("initialize", "Gene", function(.Object, ...){
     .Object <- callNextMethod()
-    .Object@ens <- getBM(c("structure_gene_stable_id","structure_transcript_stable_id","structure_exon_stable_id",
-                           "structure_exon_chrom_start","structure_exon_chrom_end","structure_exon_rank",
+    .Object@ens <- getBM(c("structure_gene_stable_id","structure_transcript_stable_id","ensembl_exon_id",
+                           "exon_chrom_start","exon_chrom_end","rank",
                            "structure_transcript_chrom_strand", "structure_biotype"),
                          filters = .Object@type, values=.Object@id, mart=.Object@biomart)
 
@@ -171,8 +171,8 @@ setMethod("initialize", "GeneRegion", function(.Object,...){
 
     if (!is.null(.Object@biomart)) {
         .Object@ens <- getBM(c("structure_gene_stable_id","structure_transcript_stable_id",
-                               "structure_exon_stable_id","structure_exon_chrom_start","structure_exon_chrom_end",
-                               "structure_exon_rank", "structure_transcript_chrom_strand","structure_biotype"),
+                               "ensembl_exon_id","exon_chrom_start","exon_chrom_end",
+                               "rank", "structure_transcript_chrom_strand","structure_biotype"),
                              filters=c("chromosome_name", "start", "end", "strand"),
                              values=list(.Object@chromosome,.Object@start, .Object@end, strand),
                              mart=.Object@biomart)
@@ -202,8 +202,8 @@ setClass("Transcript", contains = "gdObject",
 
 setMethod("initialize", "Transcript", function(.Object,...){
   .Object <- callNextMethod()
-  .Object@ens <- getBM(c("structure_gene_stable_id","structure_transcript_stable_id","structure_exon_stable_id",
-                         "structure_exon_chrom_start","structure_exon_chrom_end","structure_exon_rank",
+  .Object@ens <- getBM(c("structure_gene_stable_id","structure_transcript_stable_id","ensembl_exon_id",
+                         "exon_chrom_start","exon_chrom_end","rank",
                          "structure_transcript_chrom_strand","structure_biotype"),
                        filters = .Object@type, values=.Object@id,mart=.Object@biomart)
 
