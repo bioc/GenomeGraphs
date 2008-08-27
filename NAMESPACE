@@ -11,6 +11,7 @@ export(gdPlot, DisplayPars, geneRegionBiomart, geneBiomart,
 exportClasses(DisplayPars, GenericArray, MappedRead, BaseTrack, Legend,
               Title, Gene, Transcript, GeneModel,GenomeAxis, ExonArray,
               GeneRegion, TranscriptRegion, Ideogram, Segmentation, gdObject,
-              Overlay, RectangleOverlay, TextOverlay, AnnotationTrack)
+              Overlay, RectangleOverlay, TextOverlay, AnnotationTrack,
+              Segmentable)
 
 exportMethods(initialize, show, setPar, getPar, drawGD, showDisplayOptions)

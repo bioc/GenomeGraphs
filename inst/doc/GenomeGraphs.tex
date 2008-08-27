@@ -60,9 +60,6 @@ of the biomaRt package.
 \begin{Sinput}
 > mart <- useMart("ensembl", dataset = "hsapiens_gene_ensembl")
 \end{Sinput}
-\begin{Soutput}
-Checking attributes and filters ... ok
-\end{Soutput}
 \end{Schunk}
 
 Next we can retrieve the gene structure of the gene of interest.
@@ -212,11 +209,6 @@ data along with annotation.
 \begin{Schunk}
 \begin{Sinput}
 > yeastMart <- useMart("ensembl", dataset = "scerevisiae_gene_ensembl")
-\end{Sinput}
-\begin{Soutput}
-Checking attributes and filters ... ok
-\end{Soutput}
-\begin{Sinput}
 > minB <- 10000
 > maxB <- 20000
 > chrRoman <- as.character(as.roman(1))
@@ -365,11 +357,6 @@ case one wants to be a bit more precise.
 > data("seqDataEx", package = "GenomeGraphs")
 > str = seqDataEx$david[, "strand"] == 1
 > biomart = useMart("ensembl", "scerevisiae_gene_ensembl")
-\end{Sinput}
-\begin{Soutput}
-Checking attributes and filters ... ok
-\end{Soutput}
-\begin{Sinput}
 > pList = list("-" = makeGeneRegion(chromosome = "IV", 
 +     start = 1300000, end = 1310000, strand = "-", 
 +     biomart = biomart, dp = DisplayPars(plotId = TRUE, 

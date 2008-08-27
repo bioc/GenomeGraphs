@@ -117,19 +117,19 @@ setMethod("initialize", "gdObject", function(.Object, ...) {
 
 setClass("AnnotationTrack", contains = "gdObject",
          representation(chr = "numeric", strand = "numeric", regions = "dfOrNULL"),
-         
          prototype(columns = c("start", "end", "feature", "group", "ID"),
                    featureColumnName = "feature",
                    dp = DisplayPars(size = 1,
                    plotId = FALSE,
                    idRotation = 0,
-                   idColor = "white")))
+                   idColor = "white"))
+         )
 
 setMethod("initialize", "AnnotationTrack", function(.Object, ...) {
     .Object <- callNextMethod()
 
-    if (!all(.Object@columns %in% colnames(.Object@regions))) {
-        stop(cat("problem initializing AnnotationTrack need the following columns:",
+    if (!is.null(.Object@regions) && !all(.Object@columns %in% colnames(.Object@regions))) {
+        stop(cat("Problem initializing AnnotationTrack need the following columns:",
                  paste(.Object@columns, collpase = ", ")), "\n")
     }
     return(.Object)
@@ -141,21 +141,22 @@ makeAnnotationTrack <- function(regions = NULL, chr = NULL, strand = NULL, start
     pt <- getClass("AnnotationTrack")@prototype
     if (is.null(dp)) dp <- pt@dp
 
-    if (is.null(regions)) {
-        if (is.null(start) || is.null(end))
-            stop("Must specify either regions, or start and end.")
+    if (missing(regions)) {
+        if (missing(start) || missing(end))
+            stop("Must specify either regions or start and end.")
         if (length(start) != length(end))
             stop("Start and end must be vectors of the same length")
-        
-        if (is.null(feature))
-            feature <- rep("unknown", length(start))
-        if (is.null(group))
-            group <- 1:length(start)
-        if (is.null(ID))
-            ID <- 1:length(start)
-            
-        regions <- data.frame(start = start, end = end, feature = feature,
-                              group = group, ID = ID)
+
+        if (length(start) > 0) {
+            if (missing(feature))
+                feature <- rep("unknown", length(start))
+            if (missing(group))
+                group <- 1:length(start)
+            if (missing(ID))
+                ID <- 1:length(start)
+
+            regions <- data.frame(start = start, end = end, feature = feature, group = group, ID = ID)
+        }
     }
     if (is.null(chr))
         chr <- 0
@@ -172,9 +173,8 @@ geneBiomart <- function(id, biomart, type = "ensembl_gene_id", dp = NULL) {
                  filters = type, values = id, mart = biomart)
     
     dp <- dpConcat(dp, DisplayPars(size = 1, color = "orange", plotId = FALSE, idRotation = 90, idColor = "white"))
-    new("AnnotationTrack", chr = 0, strand = -1,
-        regions = data.frame(start = ens[,4], end = ens[,5], feature = ens[,8], group = ens[,1], ID = ens[,3]),
-        dp = dp)
+    makeAnnotationTrack(start = ens[,4], end = ens[,5], feature = ens[,8], group = ens[,1],
+                        ID = ens[,3], dp = dp)
 }
 
 geneRegionBiomart <- function(chr, start, end, strand, biomart, dp = NULL, chrFunction = function(x) x,
@@ -209,11 +209,12 @@ geneRegionBiomart <- function(chr, start, end, strand, biomart, dp = NULL, chrFu
                                    snRNA_pseudogene = "coral3",   
                                    tRNA_pseudogene = "antiquewhite3",
                                    V_segment =  "aquamarine", dp = dp))
-    
-    new("AnnotationTrack", chr = chr, strand = strand,
-        regions = data.frame(start = ens[,4], end = ens[,5], feature = ens[,8], group = ens[,1], ID = ens[,3]),
-        dp = dp)
+
+    makeAnnotationTrack(chr = chr, strand = strand, start = ens[,4],
+                        end = ens[,5], feature = ens[,8], group =
+                        ens[,1], ID = ens[,3], dp = dp)
 }
+
 ###############################################
 setClass("Gene", contains = "gdObject",
          representation(id = "character",
