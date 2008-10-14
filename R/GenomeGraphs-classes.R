@@ -525,6 +525,7 @@ makeExonArray <- function(intensity, probeStart, probeEnd, probeId, nProbes, dis
  new("ExonArray", intensity = intensity, probeStart = probeStart, probeEnd = probeEnd,probeId = probeId,
      nProbes = nProbes, displayProbesets = displayProbesets,dp = dp)
 }
+
 ###########################################
 setClass("GeneModel", contains = "gdObject", 
          representation(exonStart = "numeric",
