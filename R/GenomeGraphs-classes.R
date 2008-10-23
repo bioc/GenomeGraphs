@@ -549,6 +549,7 @@ setClass("BaseTrack", contains = c("gdObject", "Segmentable"),
                    dp = DisplayPars(size = 5,
                    color = "orange",
                    lty = "solid",
+                   type = "p", 
                    lwd = 1), segmentation = NULL)
          );
 

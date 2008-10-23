@@ -299,12 +299,23 @@ pList = list("-" = makeGeneRegion(chromosome = "IV", start = 1300000, end = 1310
                                            dp = DisplayPars(pointSize = .5)),
               "David -" = makeGenericArray(probeStart = seqDataEx$david[!str, "location"], 
                                            intensity = seqDataEx$david[!str, "expr", drop=FALSE], 
-                                           dp = DisplayPars(color = "darkgreen", pointSize = .5)),
+                dp = DisplayPars(color = "darkgreen", pointSize = .5)),
               "Lee" = makeBaseTrack(base = seqDataEx$nislow[, "location"], 
                                     value = seqDataEx$nislow[, "evalue"], dp = DisplayPars(color="grey", lwd=.25)),
               "Conservation" = makeBaseTrack(base = seqDataEx$conservation[, "location"], 
                                              value = seqDataEx$conservation[, "score"], 
                                              dp = DisplayPars(color="gold4", lwd=.25)))
+
+gdPlot(pList, minBase = 1301500, maxBase = 1302500, 
+       overlay = makeRectangleOverlay(start = 1302105, end = 1302190, region = c(4,8),  dp = DisplayPars(alpha = .2)))
+@ 
+
+We can also employ different plotting types for the BaseTrack
+object.
+<<echo=TRUE, eval=TRUE, fig=TRUE>>=
+setPar(pList$Lee@dp, "type", "h")
+setPar(pList$Lee@dp, "color", "limegreen")
+setPar(pList$Lee@dp, "lwd", 2)
 
 gdPlot(pList, minBase = 1301500, maxBase = 1302500, 
        overlay = makeRectangleOverlay(start = 1302105, end = 1302190, region = c(4,8),  dp = DisplayPars(alpha = .2)))

@@ -668,18 +668,41 @@ setMethod("drawGD", signature("BaseTrack"), function(gdObject, minBase, maxBase,
         pushViewport(dataViewport(xData = xlim, yscale = ylim, extension = 0, clip = TRUE,
                                   layout.pos.col = 1, layout.pos.row = vpPosition))
     }
-    
-    col <- getColor(gdObject)
-    lwd <- getLwd(gdObject)
-    lty <- getLty(gdObject)  
-    ord <- order(getBase(gdObject))
-    pos <- getBase(gdObject)[ord]
-    whBase <- (pos > minBase & pos < maxBase)
-    baseValue <- baseValue[ord]
 
+    ## here i probably want to vectorize these two.
+    lwd <- getPar(gdObject, "lwd")
+    lty <- getPar(gdObject, "lty")
+    pty <- getPar(gdObject, "type")
+    pos <- getBase(gdObject)
+    col <- if (length(color <- getPar(gdObject, "color")) == length(pos)) {
+        color
+    }
+    else {
+        rep(color, length(pos))[1:length(pos)]
+    }
+    whBase <- (pos > minBase & pos < maxBase)
+    col <- col[whBase]
+    baseValue <- baseValue[whBase]
+    pos <- pos[whBase]
+    
     if (sum(whBase) > 0) {
-        grid.points(pos[whBase], baseValue[whBase], default.units = "native", gp = gpar(col=col),
-                    size = unit(lwd, "char"), pch = 16)
+        dP <- function() {
+            grid.points(pos, baseValue, default.units = "native", gp = gpar(col=col),
+                        size = unit(lwd, "char"), pch = 16)
+        }
+        dVL <- function() {
+            mapply(function(a, b, c) {
+                grid.lines(x = c(a, a),
+                           y = c(min(ylim), b),
+                           default.units = "native", gp = gpar(col=c, lwd = unit(lwd, "char")))
+            }, pos, baseValue, col)
+        }
+        
+        if (pty == "p") {
+            dP()
+        } else if (pty == "h") {
+            dVL()
+        }
         grid.yaxis()
     }
 
