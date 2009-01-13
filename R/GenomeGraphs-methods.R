@@ -381,14 +381,15 @@ setMethod("drawGD", signature("AnnotationTrack"), function(gdObject, minBase, ma
     else { pp = 15 }
 
     for(i in seq(along=ens[,1])) {
+ 
         color <- getColor(gdObject)
-        if (!is.null(getBiotypeColor(gdObject, ens[i,8])))
-            color <- getBiotypeColor(gdObject, ens[i,8])
-
+       
+        if (!is.null(getBiotypeColor(gdObject, as.character(ens[i,8]))))
+            color <- getBiotypeColor(gdObject, as.character(ens[i,8]))
         grid.rect(ens[i, 5], 5, width = ens[i, 5] - ens[i, 4], height = 30,
                   gp=gpar(col = "black", fill = color), default.units="native",
                   just = c("right", "bottom"))
-
+     
         if (getPlotId(gdObject)) {
             rot <- getPar(gdObject, "idRotation")
             col <- getPar(gdObject, "idColor")
@@ -403,7 +404,7 @@ setMethod("drawGD", signature("AnnotationTrack"), function(gdObject, minBase, ma
         exons = ens[ens[,1]==genes[g],-c(1,2,3,6)]
         ord = order(exons[,1])
         exons = exons[ord,]
-        if(!is.null(getBiotypeColor(gdObject,exons[1,4]))) color = getBiotypeColor(gdObject,exons[1,4])
+        if(!is.null(getBiotypeColor(gdObject,as.character(exons[1,4])))) color = getBiotypeColor(gdObject,as.character(exons[1,4]))
         for(j in seq(along=exons[,1])){
             if(j < length(exons[,1])){
                 grid.lines(c(exons[j,2],exons[j,2]+((exons[j+1,1] - exons[j,2])/4)),c(20,pp),

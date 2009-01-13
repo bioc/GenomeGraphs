@@ -167,11 +167,11 @@ makeAnnotationTrack <- function(regions = NULL, chr = NULL, strand = NULL, start
 }
 
 geneBiomart <- function(id, biomart, type = "ensembl_gene_id", dp = NULL) {
-    ens <- getBM(c("structure_gene_stable_id", "structure_transcript_stable_id", "structure_exon_stable_id",
-                   "structure_exon_chrom_start", "structure_exon_chrom_end", "structure_exon_rank",
-                   "structure_transcript_chrom_strand", "structure_biotype"),
-                 filters = type, values = id, mart = biomart)
-    
+   # ens <- getBM(c("structure_gene_stable_id", "structure_transcript_stable_id", "ensembl_exon_id","exon_chrom_start", "exon_chrom_end", "rank", "structure_transcript_chrom_strand", "structure_biotype"),filters = type, values = id, mart = biomart)
+   ens <- getBM(c("structure_gene_stable_id", "structure_transcript_stable_id", "ensembl_exon_id","exon_chrom_start", "exon_chrom_end", "rank", "structure_transcript_chrom_strand"),filters = type, values = id, mart = biomart)
+   if(!is.null(ens)){
+     ens <- cbind(ens, biotype=rep("protein_coding", length(ens[,1])))
+   }
     dp <- dpConcat(dp, DisplayPars(size = 1, color = "orange", plotId = FALSE, idRotation = 90, idColor = "white"))
     makeAnnotationTrack(start = ens[,4], end = ens[,5], feature = ens[,8], group = ens[,1],
                         ID = ens[,3], dp = dp)
@@ -179,12 +179,12 @@ geneBiomart <- function(id, biomart, type = "ensembl_gene_id", dp = NULL) {
 
 geneRegionBiomart <- function(chr, start, end, strand, biomart, dp = NULL, chrFunction = function(x) x,
                               strandFunction = function(x) x) {
-    ens <- getBM(c("structure_gene_stable_id","structure_transcript_stable_id", "ensembl_exon_id",
-                   "exon_chrom_start","exon_chrom_end", "rank",
-                   "structure_transcript_chrom_strand","structure_biotype"),
-                 filters = c("chromosome_name", "start", "end", "strand"),
-                 values = list(chrFunction(chr), start, end, strandFunction(strand)), mart = biomart)
-    
+   # ens <- getBM(c("structure_gene_stable_id","structure_transcript_stable_id", "ensembl_exon_id","exon_chrom_start","exon_chrom_end", "rank","structure_transcript_chrom_strand","structure_biotype"),filters = c("chromosome_name", "start", "end", "strand"),values = list(chrFunction(chr), start, end, strandFunction(strand)), mart = biomart)
+    ens <- getBM(c("structure_gene_stable_id","structure_transcript_stable_id", "ensembl_exon_id","exon_chrom_start","exon_chrom_end", "rank","structure_transcript_chrom_strand"),filters = c("chromosome_name", "start", "end", "strand"),values = list(chrFunction(chr), start, end, strandFunction(strand)), mart = biomart)
+
+    if(!is.null(ens)){
+     ens <- cbind(ens, biotype=rep("protein_coding", length(ens[,1])))
+   }
     dp <- dpConcat(dp, DisplayPars(size = 1, color = "orange", plotId = FALSE, idRotation = 90, idColor = "white",
                                    C_segment = "burlywood4",
                                    D_segment = "lightblue",
@@ -231,11 +231,12 @@ setClass("Gene", contains = "gdObject",
 
 setMethod("initialize", "Gene", function(.Object, ...){
     .Object <- callNextMethod()
-    .Object@ens <- getBM(c("structure_gene_stable_id","structure_transcript_stable_id","ensembl_exon_id",
-                           "exon_chrom_start","exon_chrom_end","rank",
-                           "structure_transcript_chrom_strand", "structure_biotype"),
-                         filters = .Object@type, values=.Object@id, mart=.Object@biomart)
-
+    #.Object@ens <- getBM(c("structure_gene_stable_id","structure_transcript_stable_id","ensembl_exon_id","exon_chrom_start","exon_chrom_end","rank","structure_transcript_chrom_strand", "structure_biotype"), filters = .Object@type, values=.Object@id, mart=.Object@biomart)
+ .Object@ens <- getBM(c("structure_gene_stable_id","structure_transcript_stable_id","ensembl_exon_id",
+                           "exon_chrom_start","exon_chrom_end","rank","structure_transcript_chrom_strand"), filters = .Object@type, values=.Object@id, mart=.Object@biomart)
+    if(!is.null(.Object@ens)){
+     .Object@ens <- cbind(.Object@ens, biotype=rep("protein_coding", length(.Object@ens[,1])))
+   }
     if (is.null(.Object@ens)) {
         setPar(.Object, "size", 0)
     }
@@ -304,12 +305,12 @@ setMethod("initialize", "GeneRegion", function(.Object,...){
     .Object@end <- .Object@end + 2000
 
     if (!is.null(.Object@biomart)) {
-        .Object@ens <- getBM(c("structure_gene_stable_id","structure_transcript_stable_id",
-                               "ensembl_exon_id","exon_chrom_start","exon_chrom_end",
-                               "rank", "structure_transcript_chrom_strand","structure_biotype"),
-                             filters=c("chromosome_name", "start", "end", "strand"),
-                             values=list(.Object@chromosome,.Object@start, .Object@end, strand),
-                             mart=.Object@biomart)
+       # .Object@ens <- getBM(c("structure_gene_stable_id","structure_transcript_stable_id","ensembl_exon_id","exon_chrom_start","exon_chrom_end","rank", "structure_transcript_chrom_strand","structure_biotype"),filters=c("chromosome_name", "start", "end", "strand"), values=list(.Object@chromosome,.Object@start, .Object@end, strand), mart=.Object@biomart)
+        
+ .Object@ens <- getBM(c("structure_gene_stable_id","structure_transcript_stable_id","ensembl_exon_id","exon_chrom_start","exon_chrom_end","rank", "structure_transcript_chrom_strand"),filters=c("chromosome_name", "start", "end", "strand"), values=list(.Object@chromosome,.Object@start, .Object@end, strand), mart=.Object@biomart)
+         if(!is.null(.Object@ens)){
+     .Object@ens <- cbind(.Object@ens, biotype=rep("protein_coding", length(.Object@ens[,1])))
+   }
     }
     
     if (is.null(.Object@ens)) {
