@@ -348,11 +348,11 @@ setClass("Transcript", contains = "gdObject",
 
 setMethod("initialize", "Transcript", function(.Object,...){
     .Object <- callNextMethod()
-    .Object@ens <- getBM(c("structure_gene_stable_id","structure_transcript_stable_id","ensembl_exon_id",
-                           "exon_chrom_start","exon_chrom_end","rank",
-                           "structure_transcript_chrom_strand","structure_biotype"),
-                         filters = .Object@type, values=.Object@id,mart=.Object@biomart)
-
+    #.Object@ens <- getBM(c("structure_gene_stable_id","structure_transcript_stable_id","ensembl_exon_id", "exon_chrom_start","exon_chrom_end","rank","structure_transcript_chrom_strand","structure_biotype"),filters = .Object@type, values=.Object@id,mart=.Object@biomart)
+    .Object@ens <- getBM(c("structure_gene_stable_id","structure_transcript_stable_id","ensembl_exon_id", "exon_chrom_start","exon_chrom_end","rank","structure_transcript_chrom_strand"),filters = .Object@type, values=.Object@id,mart=.Object@biomart)
+    if(!is.null(.Object@ens)){
+      .Object@ens <- cbind(.Object@ens, biotype=rep("protein_coding", length(.Object@ens[,1])))
+    }
     if (is.null(.Object@ens)) {
         setPar(.Object@dp, "size", 0)
         .Object@numOfTranscripts <- 0
