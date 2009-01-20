@@ -1,6 +1,5 @@
 \name{makeGenericArray}
 \alias{makeGenericArray}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Creates an object of class GenericArray}
 \description{
   Creates an object of class Generic Array representing microarray data.  This could be gene expression, array CGH, etc.
@@ -8,7 +7,6 @@
 \usage{
 makeGenericArray(intensity, probeStart, probeEnd, segmentation, dp = NULL)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{intensity}{Matrix of intensities, probes in the rows, samples in the columns}
   \item{probeStart}{Vector of start positions for the probes}
@@ -19,19 +17,10 @@ makeGenericArray(intensity, probeStart, probeEnd, segmentation, dp = NULL)
 \value{
 Object of class GenericArray
 }
-\references{ ~put references to the literature/web site here ~ }
+\references{BMC bioinformatics 2009}
 \author{Jim Bullard and Steffen Durinck}
-\note{ ~~further notes~~ 
-
- ~Make other sections like Warning with \section{Warning }{....} ~
-}
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
+\seealso{gdPlot}
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
 function (intensity, probeStart, probeEnd, segmentation, dp = NULL) 
 {
     pt <- getClass("GenericArray")@prototype
@@ -47,6 +36,4 @@ function (intensity, probeStart, probeEnd, segmentation, dp = NULL)
         probeEnd = probeEnd, dp = dp, segmentation = segmentation)
   }
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
 \keyword{hplot}
