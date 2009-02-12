@@ -538,7 +538,7 @@ setMethod("drawGD", signature("GenericArray"), function(gdObject, minBase, maxBa
     for(s in seq(along=intensity[1,])){
       for(p in seq(along=intensity[,1])){
         grid.lines(c(probepos[p,1],probepos[p,2]), c(intensity[p,s],intensity[p,s]),
-                   default.units = "native", gp = gpar(col=col, lwd = lwd, lty = lty))
+                   default.units = "native", gp = gpar(col=color[1], lwd = lwd, lty = lty))
       }
     }
   }
