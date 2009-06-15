@@ -547,7 +547,7 @@ setMethod("drawGD", signature("GenericArray"), function(gdObject, minBase, maxBa
       probeStart = getProbeStart(gdObject) 
       ord = order(probeStart)
       probepos = probeStart[ord]
-      intensity = intensity[ord,]
+      intensity = intensity[ord,,drop=FALSE]
       for(p in seq(along=intensity[1,])){
         lwdInd = 1
         colInd = 1
