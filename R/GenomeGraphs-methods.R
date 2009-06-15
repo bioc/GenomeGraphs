@@ -369,8 +369,8 @@ setMethod("drawGD", signature("AnnotationTrack"), function(gdObject, minBase, ma
 ################################
 .drawGene <- function(gdObject, minBase, maxBase, vpPosition) {
     ens <- getExonModel(gdObject)
-    if (is.null(ens)) {
-        warning("No genes in gene region.")
+    if (dim(ens)[1] == 0) {
+        #warning("No genes in gene region.")
         return(NULL)
     }
     pushViewport(dataViewport(xData=c(minBase, maxBase), extension = 0,
@@ -427,8 +427,8 @@ setMethod("drawGD", signature("GeneRegion"), .drawGene)
 setMethod("drawGD", signature("Transcript"), function(gdObject, minBase, maxBase, vpPosition) {
     ens = getExonModel(gdObject)
     
-    if (is.null(ens)) {
-        warning("No transcripts in transcript region.")
+    if (dim(ens)[1] == 0) {
+        #warning("No transcripts in transcript region.")
         return(NULL)
     }
     
