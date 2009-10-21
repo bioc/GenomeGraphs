@@ -21,15 +21,15 @@ Objects can be created by calls of the form \code{new("ExonArray", ...)}.
     \item{\code{probeEnd}:}{Object of class \code{"numeric"} vector with the end positions of the probes}
     \item{\code{probeId}:}{Object of class \code{"character"} vector containing the probeset identifiers}
     \item{\code{nProbes}:}{Object of class \code{"numeric"} vector defining how many probes there are for each exon/probeset}
-    \item{\code{size}:}{Object of class \code{"numeric"} specifying the size of the ExonArray plot in the final plot}
+%     \item{\code{size}:}{Object of class \code{"numeric"} specifying the size of the ExonArray plot in the final plot}
     \item{\code{displayProbesets}:}{Object of class \code{"logical"} used to indicate if probe set names should be plotted or not}
-    \item{\code{probesetSize}:}{Object of class \code{"numeric"} font size of the probeset identifiers to be plotted }
-    \item{\code{color}:}{Object of class \code{"character"} vector of
-      colors or one color that will be used to draw  the intensity values }
-    \item{\code{mapColor}:}{Object of class \code{"character"}
-      specifying the color of the lines that  map the probeset positions to the Ensembl gene annotation}
-    \item{\code{lwd}:}{Object of class \code{"numeric"} vector of line widths to be used to plot the intensity data.}
-    \item{\code{lty}:}{Object of class \code{"character"} vector of line types to be used to plot the intensity data.}
+%     \item{\code{probesetSize}:}{Object of class \code{"numeric"} font size of the probeset identifiers to be plotted }
+%     \item{\code{color}:}{Object of class \code{"character"} vector of
+%       colors or one color that will be used to draw  the intensity values }
+%     \item{\code{mapColor}:}{Object of class \code{"character"}
+%       specifying the color of the lines that  map the probeset positions to the Ensembl gene annotation}
+%     \item{\code{lwd}:}{Object of class \code{"numeric"} vector of line widths to be used to plot the intensity data.}
+%     \item{\code{lty}:}{Object of class \code{"character"} vector of line types to be used to plot the intensity data.}
   }
 }
 \section{Extends}{

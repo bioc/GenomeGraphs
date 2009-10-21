@@ -14,10 +14,10 @@ Objects can be created by calls of the form \code{new("Transcript", ...)}.
 	 \describe{
     \item{\code{id}:}{Object of class \code{"character"}, represents the gene identifier that should be used to retrieve the tanscript level annotation }
     \item{\code{type}:}{Object of class \code{"character"}, represents the type of identifiers used to specify the gene e.g. hgnc\_symbol, entrezgene and ensembl\_gene\_id}
-    \item{\code{size}:}{Object of class \code{"numeric"}, represents the size of the plot of this object}
+%     \item{\code{size}:}{Object of class \code{"numeric"}, represents the size of the plot of this object}
     \item{\code{transcriptSize}:}{Object of class \code{"numeric"}, represents the size of the transcripts in the plot}
     \item{\code{numOfTranscripts}:}{Object of class \code{"numeric"}, should not be used bu users }
-    \item{\code{color}:}{Object of class \code{"character"}, color of the exons}
+%     \item{\code{color}:}{Object of class \code{"character"}, color of the exons}
     \item{\code{biomart}:}{Object of class \code{"Mart"}, containing the links to the Ensembl database.  This object should be created with the useMart function of the biomaRt package }
     \item{\code{ens}:}{Object of class \code{"data.frame"}, should not be used by the users.  Contains the output from the biomaRt query }
   }

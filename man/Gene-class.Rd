@@ -14,8 +14,8 @@ Objects can be created by calls of the form \code{new("Gene", ...)}.
 	 \describe{
     \item{\code{id}:}{Object of class \code{"character"}, representing a unique identifier for the gene or a vector of identifiers for genes that are located near each other (or at least on the same chromosome)}
     \item{\code{type}:}{Object of class \code{"character"}, representing the type of identifier used, e.g. hgnc\_symbol, entrezgene and ensembl\_gene\_id, check the listFilters function of the biomaRt package for more identifier options}
-    \item{\code{size}:}{Object of class \code{"numeric"}, specifies the size of the plot}
-    \item{\code{color}:}{Object of class \code{"character"}, specifies the color of the exons }
+%     \item{\code{size}:}{Object of class \code{"numeric"}, specifies the size of the plot}
+%     \item{\code{color}:}{Object of class \code{"character"}, specifies the color of the exons }
     \item{\code{biomart}:}{Object of class \code{"Mart"}, contains the link to the Ensembl database and should be created using the useMart function from the biomaRt package }
     \item{\code{ens}:}{Object of class \code{"data.frame"}, contains the output from the Ensembl query, users don't need to give a value to this }
   }

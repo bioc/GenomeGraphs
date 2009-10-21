@@ -16,8 +16,8 @@ Objects can be created by calls of the form \code{new("GeneRegion", ...)}.
     \item{\code{end}:}{Object of class \code{"numeric"}, end position }
     \item{\code{chromosome}:}{Object of class \code{"character"}, chromosome name }
     \item{\code{strand}:}{Object of class \code{"character"}, represents the strand from which the gene structures should be retrieved.  Value is either + or -}
-    \item{\code{size}:}{Object of class \code{"numeric"}, represents the size of the GeneRegion in the final plot }
-    \item{\code{color}:}{Object of class \code{"character"}, represents the color to be used to plot the exons }
+%     \item{\code{size}:}{Object of class \code{"numeric"}, represents the size of the GeneRegion in the final plot }
+%     \item{\code{color}:}{Object of class \code{"character"}, represents the color to be used to plot the exons }
     \item{\code{biomart}:}{Object of class \code{"Mart"}, containing the link to the Ensembl database.  This should be created by the useMart function from the biomaRt package}
     \item{\code{ens}:}{Object of class \code{"data.frame"}, output of the biomaRt query, should not be used by users}
   }
