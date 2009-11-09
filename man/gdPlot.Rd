@@ -42,14 +42,16 @@ mart = useMart("ensembl", dataset="hsapiens_gene_ensembl")
 genesplus = new("GeneRegion", start = minbase, end = maxbase, strand = "+", chromosome = "3", biomart=mart)
 genesmin = new("GeneRegion", start = minbase, end = maxbase, strand = "-", chromosome = "3", biomart=mart)
 
-seg <- new("Segmentation", segments = segments, 
-           segmentStart = segStart, segmentEnd = segEnd, dp = DisplayPars(color = "dodgerblue2", lwd=2,lty = "dashed"))
+seg <- new("Segmentation", segments = segments[[1]], 
+           segmentStart = segStart[[1]], segmentEnd = segEnd[[1]],
+           dp = DisplayPars(color = "dodgerblue2", lwd=2,lty = "dashed"))
 
 cop <- new("GenericArray", intensity  = cn, probeStart = probestart, 
-           segmentation =  seg, dp = DisplayPars(size=3, color = "seagreen", type="dot"))
+           trackOverlay =  seg, dp = DisplayPars(size=3, color = "seagreen", type="dot"))
 
 ideog = new("Ideogram", chromosome = "3")
-expres = new("GenericArray", intensity = intensity, probeStart = exonProbePos, dp = DisplayPars(color="darkred", type="point"))
+expres = new("GenericArray", intensity = intensity, probeStart = exonProbePos,
+             dp = DisplayPars(color="darkred", type="point"))
 genomeAxis = new("GenomeAxis", add53 = TRUE, add35=TRUE)
 gdPlot(list(ideog,expres,cop,genesplus,genomeAxis,genesmin), minBase = minbase, maxBase =maxbase)
 

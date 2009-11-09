@@ -5,13 +5,13 @@ export(gdPlot, DisplayPars, geneRegionBiomart, geneBiomart,
        makeLegend,makeGene, makeGeneRegion, makeTranscript,
        makeExonArray, makeGeneModel, makeBaseTrack,
        makeRectangleOverlay, makeTextOverlay, makeSegmentation,
-       makeTitle, makeGenericArray, makeIdeogram, makeGenomeAxis,
-       makeAnnotationTrack)
+       makeSmoothing, makeTitle, makeGenericArray, makeIdeogram,
+       makeGenomeAxis, makeAnnotationTrack)
 
 exportClasses(DisplayPars, GenericArray, MappedRead, BaseTrack, Legend,
               Title, Gene, Transcript, GeneModel,GenomeAxis, ExonArray,
-              GeneRegion, TranscriptRegion, Ideogram, Segmentation, gdObject,
+              GeneRegion, TranscriptRegion, Ideogram, gdObject,
               Overlay, RectangleOverlay, TextOverlay, AnnotationTrack,
-              Segmentable)
+              Segmentation, TrackOverlay, Smoothing, ImplementsTrackOverlay)
 
 exportMethods(initialize, show, setPar, getPar, drawGD, showDisplayOptions)

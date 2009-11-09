@@ -1,7 +1,8 @@
 setMethod("show",signature(object="Gene"),
   function(object){
     len = min(5, length(object@ens[,1]))
-    res = paste("Object of class 'Gene':\n ID:",object@id,"\n Type:",object@type,"\n Exons in Ensembl: \n", sep="")
+    res = paste("Object of class 'Gene':\n ID:",object@id,"\n Type:",object@type,
+      "\n Exons in Ensembl: \n", sep="")
     cat(res)
     print(object@ens[1:len,])
     res = paste("\n There are ",length(object@ens[,1])-len," more rows", sep="")
@@ -11,7 +12,8 @@ setMethod("show",signature(object="Gene"),
 setMethod("show",signature(object="Transcript"),
   function(object){
     len = min(5, length(object@ens[,1]))
-    res = paste("Object of class 'Transcript':\n ID:",object@id,"\n Type:",object@type,"\n Exons in Ensembl: \n", sep="")
+    res = paste("Object of class 'Transcript':\n ID:",object@id,"\n Type:",
+      object@type,"\n Exons in Ensembl: \n", sep="")
     cat(res)
     print(object@ens[1:len,])
     res = paste("\n There are ",length(object@ens[,1])-len," more rows", sep="")
@@ -124,7 +126,6 @@ setMethod("getChromosome",signature("GeneRegion"),function(obj) obj@chromosome)
 setMethod("getChromosome",signature("TranscriptRegion"),function(obj) obj@chromosome)
 setMethod("getChromosome",signature("Ideogram"),function(obj) obj@chromosome)
 
-
 setGeneric("getTranscriptSize",def=function(obj,...)standardGeneric("getTranscriptSize"))
 setMethod("getTranscriptSize",signature("Transcript"),function(obj) obj@transcriptSize)
 setMethod("getTranscriptSize",signature("TranscriptRegion"),function(obj) obj@transcriptSize)
@@ -192,18 +193,15 @@ setGeneric("getIntensity",def = function(obj,...)standardGeneric("getIntensity")
 setMethod("getIntensity",signature("ExonArray"),function(obj) obj@intensity)
 setMethod("getIntensity",signature("GenericArray"),function(obj) obj@intensity)
 
-setGeneric("getSegmentation", def=function(obj,...) standardGeneric("getSegmentation"))
-setMethod("getSegmentation", signature("Segmentable"), function(obj) {
-    obj@segmentation
-})
-
 setGeneric("getSegments", def = function(obj, ...) standardGeneric("getSegments"))
 setGeneric("getSegmentStart",def=function(obj,...)standardGeneric("getSegmentStart"))
 setGeneric("getSegmentEnd",def=function(obj,...)standardGeneric("getSegmentEnd"))
-
 setMethod("getSegments", signature("Segmentation"),function(obj) obj@segments)
 setMethod("getSegmentStart",signature("Segmentation"),function(obj) obj@segmentStart)
 setMethod("getSegmentEnd",signature("Segmentation"),function(obj) obj@segmentEnd)
+
+setGeneric("getTrackOverlay", def = function(obj, ...) standardGeneric("getTrackOverlay"))
+setMethod("getTrackOverlay", signature("ImplementsTrackOverlay"),function(obj) obj@trackOverlay)
 
 setGeneric("getNprobes",def=function(obj,...)standardGeneric("getNprobes"))
 setMethod("getNprobes",signature("ExonArray"),function(obj) obj@nProbes)
@@ -577,11 +575,8 @@ setMethod("drawGD", signature("GenericArray"), function(gdObject, minBase, maxBa
       }
     }
   }
-    
-  sObj <- getSegmentation(gdObject)
-  if (!is.null(sObj)) {
-    .drawSegments(sObj, minBase, maxBase)
-  }
+
+  .drawTrackOverlays(gdObject, minBase, maxBase)
   
   grid.yaxis()
   popViewport(1)
@@ -597,54 +592,79 @@ setMethod("drawGD", signature("Segmentation"), function(gdObject, minBase, maxBa
   
   pushViewport(dataViewport(xData = xlim, yData = intensity, extension = 0,
                             layout.pos.col=1, layout.pos.row = vpPosition, yscale = ylim))
-  .drawSegments(gdObject, minBase, maxBase)
+  drawTrackOverlay(gdObject, minBase, maxBase)
   grid.yaxis(gp=gpar(cex=getPar(gdObject,"cex.axis")))
   popViewport(1)
 })
 
-.drawSegments <- function(sObj, minBase, maxBase) {
-    segments <- getSegments(sObj)
-    segmentStart <- getSegmentStart(sObj)
-    segmentEnd <- getSegmentEnd(sObj)
+.drawTrackOverlays <- function(gdObject, minBase, maxBase) {
+  trackOverlay <- getTrackOverlay(gdObject)
+  
+  if (!is.null(trackOverlay)) {
+    if (is.list(trackOverlay)) {
+      lapply(trackOverlay, function(to) {
+        drawTrackOverlay(to, minBase, maxBase)
+      })
+    }
+    else {
+      drawTrackOverlay(trackOverlay, minBase, maxBase)
+    }
+  }
+}
 
-    if(length(segments) > 0) {
-        colVal <- getColor(sObj) 
-        lwdVal <- getLwd(sObj)   
-        ltyVal <- getLty(sObj)   
+setGeneric("drawTrackOverlay", def = function(trackOverlay, minBase, maxBase, ...)
+           standardGeneric("drawTrackOverlay"))
 
-        ## this just fixes up a real annoyance of having to make things a list. 
-        if (length(segments) == 1 && !is.list(colVal))
-          colVal <- list(colVal)
-        if (length(segments) == 1 && !is.list(ltyVal))
-          ltyVal <- list(ltyVal)
-        if (length(segments) == 1 && !is.list(lwdVal))
-          lwdVal <- list(lwdVal)
-        
-        ## make the parameters lists of values equal to the number of segments
-        lwdVal <- rep(lwdVal,length=length(segments)) #EP
-        ltyVal <- rep(ltyVal,length=length(segments)) #EP
-        colVal <- rep(colVal,length=length(segments)) #EP
-        for(k in seq(along = segments)) {
-            whDraw <- !((segmentStart[[k]] > maxBase) |
-                        (segmentEnd[[k]] < minBase))
-            currLwd<-rep(lwdVal[[k]],length=length(segments[[k]]))
-            currLty<-rep(ltyVal[[k]],length=length(segments[[k]]))
-            currCol<-rep(colVal[[k]],length=length(segments[[k]]))
-            for(s in seq(along=segments[[k]])){
-                if (whDraw[s]) {
+setMethod("drawTrackOverlay", signature("Smoothing"),
+          function(trackOverlay, minBase, maxBase) {
+            grid.lines(trackOverlay@x, trackOverlay@y, default.units = "native",
+                       gp = gpar(col = getColor(trackOverlay), lwd = getLwd(trackOverlay),
+                         lty = getLty(trackOverlay)))
+          })
+
+setMethod("drawTrackOverlay", signature("Segmentation"),
+          function(trackOverlay, minBase, maxBase) {
+            segments <- getSegments(trackOverlay)
+            segmentStart <- getSegmentStart(trackOverlay)
+            segmentEnd <- getSegmentEnd(trackOverlay)
+            if(length(segments) > 0) {
+              colVal <- getColor(trackOverlay) 
+              lwdVal <- getLwd(trackOverlay)   
+              ltyVal <- getLty(trackOverlay)   
+              
+              ## this just fixes up a real annoyance of having to make things a list. 
+              if (length(segments) == 1 && !is.list(colVal))
+                colVal <- list(colVal)
+              if (length(segments) == 1 && !is.list(ltyVal))
+                ltyVal <- list(ltyVal)
+              if (length(segments) == 1 && !is.list(lwdVal))
+                lwdVal <- list(lwdVal)
+              
+              ## make the parameters lists of values equal to the number of segments
+              lwdVal <- rep(lwdVal,length=length(segments)) #EP
+              ltyVal <- rep(ltyVal,length=length(segments)) #EP
+              colVal <- rep(colVal,length=length(segments)) #EP
+              for(k in seq(along = segments)) {
+                whDraw <- !((segmentStart[[k]] > maxBase) |
+                            (segmentEnd[[k]] < minBase))
+                currLwd<-rep(lwdVal[[k]],length=length(segments[[k]]))
+                currLty<-rep(ltyVal[[k]],length=length(segments[[k]]))
+                currCol<-rep(colVal[[k]],length=length(segments[[k]]))
+                for(s in seq(along=segments[[k]])){
+                  if (whDraw[s]) {
                     ss <- segmentStart[[k]][s]
                     ee <- segmentEnd[[k]][s]
                     ss <- if (ss < minBase) minBase else ss
                     ee <- if (ee > maxBase) maxBase else ee
                     
                     grid.lines(c(ss,ee), c(segments[[k]][s], segments[[k]][s]), default.units = "native",
-                               gp = gpar(col=currCol[s], lwd = currLwd[s], lty =currLty[s] )) #EP
+                               gp = gpar(col=currCol[s], lwd = currLwd[s], lty = currLty[s]))
+                  }
                 }
+              }
             }
-        }
-    }
-}
-
+          })
+        
 setMethod("drawGD", signature("BaseTrack"), function(gdObject, minBase, maxBase, vpPosition) {
     baseValue <- getBaseValue(gdObject)
 
@@ -707,10 +727,8 @@ setMethod("drawGD", signature("BaseTrack"), function(gdObject, minBase, maxBase,
         grid.yaxis()
     }
 
-    sObj <- getSegmentation(gdObject)
-    if (!is.null(sObj)) {
-      .drawSegments(sObj, minBase, maxBase)
-    }
+    .drawTrackOverlays(gdObject, minBase, maxBase)
+
     popViewport()
 })
 

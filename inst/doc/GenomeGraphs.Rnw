@@ -42,6 +42,15 @@ data, gene expression data and sequencing data.
 library(GenomeGraphs)
 @
 
+<<eval=FALSE, echo=FALSE>>=
+require(biomaRt)
+require(grid)
+source("../../R/GenomeGraphs-classes.R")
+source("../../R/GenomeGraphs-methods.R")
+source("../../R/Overlay.R")
+source("../../R/GenomeGraphs.R")
+@ 
+
 \section{Creating a Ensembl annotation graphic}
 
 To create an Ensembl annotation graphic, you need to decide what you
@@ -122,11 +131,11 @@ genesplus <- makeGeneRegion(start = minbase, end = maxbase,
 genesmin <- makeGeneRegion(start = minbase, end = maxbase, 
                            strand = "-", chromosome = "3", biomart=mart)
 
-seg <- makeSegmentation(segStart, segEnd, segments, 
+seg <- makeSegmentation(segStart[[1]], segEnd[[1]], segments[[1]], 
                         dp = DisplayPars(color = "black", lwd=2,lty = "solid"))
 
 cop <- makeGenericArray(intensity  = cn, probeStart = probestart, 
-                        segmentation =  seg, dp = DisplayPars(size=3, color = "seagreen", type="dot"))
+                        trackOverlay =  seg, dp = DisplayPars(size=3, color = "seagreen", type="dot"))
 
 ideog <- makeIdeogram(chromosome = 3)
 expres <- makeGenericArray(intensity = intensity, probeStart = exonProbePos, 
@@ -181,10 +190,19 @@ grP <- makeGeneRegion(start = minB, end = maxB, strand = "+",
                       chromosome = chrRoman, biomart = yeastMart)
 grM <- makeGeneRegion(start = minB, end = maxB, strand = "-", 
                       chromosome = chrRoman, biomart = yeastMart)
-gaxis <- makeGenomeAxis( add53 = TRUE, add35 = TRUE)
+gaxis <- makeGenomeAxis(add53 = TRUE, add35 = TRUE)
 conserv <- yeastCons1[yeastCons1[,1] > minB & yeastCons1[,1] < maxB, ]
-consTrack <- makeBaseTrack( base = conserv[, 1], value = conserv[,2],
-                 dp = DisplayPars(lwd=.2, ylim = c(0, 1.25), color = "darkblue"))
+
+s1 <- makeSmoothing(x = lowess(conserv[,1], conserv[,2], f = .01)$x,
+                    y = lowess(conserv[,1], conserv[,2], f = .01)$y, 
+                    dp = DisplayPars(lwd = 3, color = "green"))
+s2 <- makeSmoothing(x = lowess(conserv[,1], conserv[,2], f = .1)$x,
+                    y = lowess(conserv[,1], conserv[,2], f = .1)$y, 
+                    dp = DisplayPars(lwd = 3, color = "purple"))
+
+consTrack <- makeBaseTrack(base = conserv[, 1], value = conserv[,2],
+                           dp = DisplayPars(lwd=.2, ylim = c(0, 1.25), 
+                           color = "darkblue"), trackOverlay = list(s1, s2))
 gdPlot(list(grP, gaxis, grM, "conservation" = consTrack)) 
 @ 
 
@@ -318,7 +336,8 @@ setPar(pList$Lee@dp, "color", "limegreen")
 setPar(pList$Lee@dp, "lwd", 2)
 
 gdPlot(pList, minBase = 1301500, maxBase = 1302500, 
-       overlay = makeRectangleOverlay(start = 1302105, end = 1302190, region = c(4,8),  dp = DisplayPars(alpha = .2)))
+       overlay = makeRectangleOverlay(start = 1302105, end = 1302190, region = c(4,8),  
+       dp = DisplayPars(alpha = .2)))
 @ 
 
 \end{document}

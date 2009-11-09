@@ -22,10 +22,10 @@ makeSegmentation(start, end, value, dp = NULL)
 }
 \examples{
 data("exampleData", package="GenomeGraphs")
-seg <- makeSegmentation(segStart, segEnd, segments, 
+seg <- makeSegmentation(segStart[[1]], segEnd[[1]], segments[[1]], 
                         dp = DisplayPars(color = "black", lwd=2,lty = "solid"))
 cop <- makeGenericArray(intensity  = cn, probeStart = probestart, 
-                        segmentation =  seg, dp = DisplayPars(size=3, color = "seagreen", type="dot"))
+                        trackOverlay =  seg, dp = DisplayPars(size=3, color = "seagreen", type="dot"))
 gdPlot(cop)
 }
 \keyword{hplot}
