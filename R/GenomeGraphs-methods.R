@@ -582,20 +582,14 @@ setMethod("drawGD", signature("GenericArray"), function(gdObject, minBase, maxBa
   popViewport(1)
 })
 
-setMethod("drawGD", signature("Segmentation"), function(gdObject, minBase, maxBase, vpPosition) {
-  segments <- getSegments(gdObject)
-  
-  ylim <- getPar(gdObject, "ylim")
-  xlim <- getPar(gdObject, "xlim")
-  if (is.null(xlim)) xlim <- c(minBase, maxBase)
-  if (is.null(ylim)) ylim <- range(segments, na.rm=TRUE)
-  
-  pushViewport(dataViewport(xData = xlim, yData = intensity, extension = 0,
-                            layout.pos.col=1, layout.pos.row = vpPosition, yscale = ylim))
-  drawTrackOverlay(gdObject, minBase, maxBase)
-  grid.yaxis(gp=gpar(cex=getPar(gdObject,"cex.axis")))
-  popViewport(1)
-})
+## This seems ill-defined.
+## setMethod("drawGD", signature("TrackOverlay"), function(gdObject, minBase, maxBase, vpPosition) {
+##     pushViewport(dataViewport(xData = c(minBase, maxBase), yData = intensity, extension = 0,
+##                               layout.pos.col=1, layout.pos.row = vpPosition, yscale = ylim))
+##     drawTrackOverlay(gdObject, minBase, maxBase)
+##     grid.yaxis(gp=gpar(cex=getPar(gdObject,"cex.axis")))
+##     popViewport(1)
+## })
 
 .drawTrackOverlays <- function(gdObject, minBase, maxBase) {
   trackOverlay <- getTrackOverlay(gdObject)
