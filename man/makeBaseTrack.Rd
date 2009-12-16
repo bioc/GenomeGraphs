@@ -6,14 +6,14 @@
 Creates an object of class BaseTrack, which can represent many datasets containing a base given by a vector of positions and a corresponding vector with values for these base positions
 }
 \usage{
-makeBaseTrack(base, value, strand, segmentation, dp = NULL)
+makeBaseTrack(base, value, strand, trackOverlay, dp = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{base}{Numeric vector of base positions}
   \item{value}{Numeric vector with values for these base positions}
   \item{strand}{Character either + or - representing the strand}
-  \item{segmentation}{Object of class Segmentation, used when segments are needed to be drawn}
+  \item{trackOverlay}{Object of class TrackOverlay, used when overlays are needed to be drawn}
   \item{dp}{Object of class DisplayPars representing the display parameters of the plot}
 }
 \value{

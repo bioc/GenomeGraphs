@@ -712,11 +712,19 @@ setMethod("drawGD", signature("BaseTrack"), function(gdObject, minBase, maxBase,
                            default.units = "native", gp = gpar(col=c, lwd = unit(lwd, "char")))
             }, pos, baseValue, col)
         }
-        
+        dCL <- function() {
+            grid.lines(x = pos, y = baseValue, default.units = "native", 
+                       gp = gpar(col = col, lwd = unit(lwd, "char")))
+        }
+
         if (pty == "p") {
             dP()
-        } else if (pty == "h") {
+        }
+        else if (pty == "h") {
             dVL()
+        }
+        else if (pty == "l") {
+            dCL()
         }
         grid.yaxis()
     }
