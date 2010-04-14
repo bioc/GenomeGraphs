@@ -13,9 +13,6 @@ makeIdeogram(chromosome, dp = NULL)
   \item{chromosome}{Chromosome to represent (currently human only) }
   \item{dp}{Display parameters such as color and size}
 }
-\details{
- 
-}
 \value{
 Object of class Ideogram
 }

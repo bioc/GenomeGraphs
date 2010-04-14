@@ -28,6 +28,4 @@ geneRegionBiomart(chr, start, end, strand, biomart, dp = NULL, chrFunction = fun
   An AnnotationTrack object. 
 }
 \author{James Bullard}
-\examples{
-}
 \keyword{hplot}

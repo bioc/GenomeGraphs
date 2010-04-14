@@ -28,9 +28,6 @@ makeAnnotationTrack(regions = NULL, chr = NULL, strand = NULL, start = NULL, end
     gene, transcript, gene, then in the dp you can say gene = 'blue' and
     transcript = 'green'}
 }
-\details{
-  
-}
 \value{
   Returns an object of class AnnotationTrack
 }

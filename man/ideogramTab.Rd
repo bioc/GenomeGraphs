@@ -12,9 +12,6 @@
 \source{
 NCBI
 }
-\references{
-  
-}
 \examples{
 data(ideogramTab)
 ## maybe str(ideogramTab) ; plot(ideogramTab) ...

@@ -13,13 +13,11 @@ drawGD(gdObject, minBase, maxBase, vpPosition, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{gdObject}{}
-  \item{minBase}{}
-  \item{maxBase}{}
-  \item{vpPosition}{}
+  \item{gdObject}{gdObject list to plot}
+  \item{minBase}{Minimum base position to plot}
+  \item{maxBase}{Maximum base position to plot}
+  \item{vpPosition}{vpPosition}
   \item{...}{Ignored}
-}
-\examples{
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

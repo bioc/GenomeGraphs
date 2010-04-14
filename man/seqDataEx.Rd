@@ -12,8 +12,6 @@
   data("seqDataEx", package = "GenomeGraphs")
   names(seqDataEx)
 }
-\source{
-}
 \references{
   Ugrappa Nagalakshmi et. al. The transcriptional landscape of the yeast genome defined by RNA sequencing.
   Science, 2008

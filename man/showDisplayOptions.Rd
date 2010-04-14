@@ -11,7 +11,7 @@ showDisplayOptions(obj, ...)
 \arguments{
   \item{obj}{Either an object of subclass gdObject or a character naming
   a class}
-  \item{\dots}{ ~~Describe \code{\dots} here~~ }
+  \item{\dots}{Dots}
 }
 \value{
   Returns a DisplayPars object which is generally printed to the screen.

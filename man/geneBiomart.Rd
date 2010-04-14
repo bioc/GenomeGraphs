@@ -9,17 +9,15 @@ geneBiomart(id, biomart, type = "ensembl_gene_id", dp = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{id}{ ~~Describe \code{id} here~~ }
-  \item{biomart}{ ~~Describe \code{biomart} here~~ }
-  \item{type}{ ~~Describe \code{type} here~~ }
-  \item{dp}{ ~~Describe \code{dp} here~~ }
+  \item{id}{Gene identifier}
+  \item{biomart}{Mart object connected to BioMart database, use useMart function to generate}
+  \item{type}{Type of identifier used, this should be a filter of the BioMart database e.g. ensembl_gene_id, hgnc_symbol}
+  \item{dp}{Display parameters}
 }
 \value{
   An AnnotationTrack object
 }
 \author{James Bullard}
-\examples{
-}
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{hplot}

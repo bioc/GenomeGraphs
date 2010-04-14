@@ -11,8 +11,8 @@ makeTextOverlay(text, xpos, ypos, region = NULL, coords = c("genomic", "absolute
   \item{text}{The text to plot}
   \item{xpos}{The xposition of the text}
   \item{ypos}{The yposition of the text}
-  \item{region}{}
-  \item{coords}{}
+  \item{region}{Region}
+  \item{coords}{Coordinates}
   \item{dp}{The display parameters}
 }
 \value{
