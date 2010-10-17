@@ -17,7 +17,7 @@
 }
 \section{Extends}{
   Class \code{"\linkS4class{gdObject}"}, directly.
-  Class \code{"\linkS4class{TrackOverlayOrNull}"}, directly.
+  Class \code{"TrackOverlayOrNull"}, directly.
 }
 \section{Methods}{
   No methods defined with class "TrackOverlay" in the signature.

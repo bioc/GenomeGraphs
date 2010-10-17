@@ -19,7 +19,7 @@
 \section{Extends}{
   Class \code{"\linkS4class{TrackOverlay}"}, directly.
   Class \code{"\linkS4class{gdObject}"}, by class "TrackOverlay", distance 2.
-  Class \code{"\linkS4class{TrackOverlayOrNull}"}, by class "TrackOverlay", distance 2.
+  Class \code{"TrackOverlayOrNull"}, by class "TrackOverlay", distance 2.
 }
 \section{Methods}{
   No methods defined with class "Smoothing" in the signature.

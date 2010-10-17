@@ -11,7 +11,7 @@
 }
 \section{Slots}{
   \describe{
-    \item{\code{trackOverlay}:}{Object of class \code{"TrackOverlayOrNull"} ~~ }
+    \item{\code{trackOverlay}:}{Object of class \code{"TrackOverlayOrNull"}}
   }
 }
 \section{Methods}{
