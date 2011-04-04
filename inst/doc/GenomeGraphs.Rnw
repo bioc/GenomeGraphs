@@ -19,7 +19,7 @@
 options(width=50)
 @ 
 
-\author{Steffen Durinck\footnote{steffen@stat.berkeley.edu} and James
+\author{Steffen Durinck\footnote{sdurinck@gmail.com} and James
   Bullard\footnote{bullard@stat.berkeley.edu}}
 \begin{document}
 \title{The GenomeGraphs user's guide}
@@ -94,7 +94,7 @@ below we will retrieve the genes on the forward (+) strand only and
 add a genomic axis as well to give us the base positions.
 
 <<fig=TRUE>>=
-plusStrand <- makeGeneRegion(chromosome = 17, start = 30450000, end = 30550000, strand = "+", biomart = mart)
+plusStrand <- makeGeneRegion(chromosome = 19, start = 12050000, end = 12230000, strand = "+", biomart = mart)
 genomeAxis <- makeGenomeAxis(add53 = TRUE)
 gdPlot(list(genomeAxis, plusStrand))
 @
@@ -103,10 +103,10 @@ Let's now add the genes on the negative strand as well and an ideogram
 of chromosome 17, highlighting the region we are looking at.
 
 <<fig=TRUE>>=
-minStrand <- makeGeneRegion( chromosome = 17, start = 30450000, end = 30550000, strand = "-", biomart = mart)
-ideogram <- makeIdeogram(chromosome = 17)
+minStrand <- makeGeneRegion( chromosome = 19, start = 12050000, end = 12230000, strand = "-", biomart = mart)
+ideogram <- makeIdeogram(chromosome = 19)
 genomeAxis <- makeGenomeAxis(add53=TRUE, add35=TRUE)
-gdPlot(list(ideogram, plusStrand, genomeAxis, minStrand), minBase = 30450000, maxBase =  30550000)
+gdPlot(list(ideogram, plusStrand, genomeAxis, minStrand))
 @
 
 \section{Adding Array data to the plot}
