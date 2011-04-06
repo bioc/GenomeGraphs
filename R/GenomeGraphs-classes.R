@@ -555,6 +555,7 @@ setClass("BaseTrack", contains = c("gdObject", "ImplementsTrackOverlay"),
          prototype(strand = "+",
                    dp = DisplayPars(size = 5,
                    color = "orange",
+                   alpha = 1,
                    lty = "solid",
                    type = "p", 
                    lwd = 1), trackOverlay = NULL)

@@ -14,4 +14,4 @@ exportClasses(DisplayPars, GenericArray, MappedRead, BaseTrack, Legend,
               Overlay, RectangleOverlay, TextOverlay, AnnotationTrack,
               Segmentation, TrackOverlay, Smoothing, ImplementsTrackOverlay)
 
-exportMethods(initialize, show, setPar, getPar, drawGD, showDisplayOptions)
+exportMethods(initialize, show, setPar, getPar, drawGD, showDisplayOptions, getSize, getGenomicRange)
