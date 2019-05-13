@@ -1,5 +1,5 @@
 Package: GenomeGraphs
-Version: 1.45.0
+Version: 1.45.1
 Title: Plotting genomic information from Ensembl
 Author: Steffen Durinck <sdurinck@gmail.com>, James Bullard <bullard@berkeley.edu>
 Maintainer: Steffen Durinck <sdurinck@gmail.com>
@@ -9,3 +9,4 @@ Description: Genomic data analyses requires integrated visualization of known ge
 Collate: GenomeGraphs-classes.R GenomeGraphs-methods.R GenomeGraphs.R Overlay.R
 License: Artistic-2.0
 LazyLoad: yes
+PackageStatus: Deprecated
